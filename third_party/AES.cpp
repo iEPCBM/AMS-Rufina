@@ -269,7 +269,6 @@ void AES::SubBytes(unsigned char **state)
       state[i][j] = sbox[t / 16][t % 16];
     }
   }
-
 }
 
 void AES::ShiftRow(unsigned char **state, int i, int n)    // shift row i on n positions
@@ -523,10 +522,3 @@ void AES::printHexArray (unsigned char a[], unsigned int n)
 	  printf("%02x ", a[i]);
 	}
 }
-
-
-
-
-
-
-
