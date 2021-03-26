@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phrases>
+	<phrase name="confirm_chat">Контрольная сумма беседы: *hash*. Операторам САОС: для активации бота в вашей системе введите эту сумму в соответствующее поле.</phrase>
+	<phrase name="confirmation_successful">Бот активирован для оператора САОС *user_name*</phrase>
+	<phrase name="hello_message">Всем привет. Я буду вас оповещать о предстоящих событиях</phrase>
+</phrases>
