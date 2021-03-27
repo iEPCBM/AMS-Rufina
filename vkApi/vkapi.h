@@ -22,7 +22,7 @@ class VkApi : public QObject
 {
     Q_OBJECT
 public:
-    explicit VkApi(QObject *parent, QString token);
+    explicit VkApi(QString token);
     ~VkApi();
     void sendRequest(QString method, QHash<QString, QString> args);
     QByteArray getResponse();

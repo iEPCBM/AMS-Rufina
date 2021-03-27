@@ -18,7 +18,7 @@ public:
     ~DialogAddChat();
 
 public slots:
-    void onChatGot(QJsonDocument json_doc);
+    void onChatGot();
 
 private slots:
     void on_btStartStopFind_clicked();
@@ -27,7 +27,8 @@ private:
     Ui::DialogAddChat *ui;
     bool m_isSearching = false;
     void findChats();
-    void addChatToTable();
+    void addChatToTable(VkChat chat);
+    QList<VkChat> m_listChats;
 
 };
 

@@ -41,7 +41,7 @@ private slots:
     void on_chkAddSignature_stateChanged(int arg1);
 
 public slots:
-    void VkApiRequestFinished(QNetworkReply* r);
+    void VkApiRequestFinished(QJsonDocument r);
 
 private:
     Ui::MainWindow *ui;

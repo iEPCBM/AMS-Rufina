@@ -1,10 +1,9 @@
 #include "vkapi.h"
 #include "../mainwindow.h"
 
-VkApi::VkApi(QObject *parent, QString token)
+VkApi::VkApi(QString token)
 {
     m_token = token;
-    m_parent = parent;
     netMngr = new QNetworkAccessManager(this);
 }
 
@@ -23,7 +22,7 @@ void VkApi::sendRequest(QString method, QHash<QString, QString> args)
 
     qDebug() << strUrl;
 
-    netMngr = new QNetworkAccessManager(m_parent);
+    netMngr = new QNetworkAccessManager(this);
 
     connect(netMngr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
     netMngr->get(QNetworkRequest(QUrl(strUrl)));

@@ -69,8 +69,8 @@ void MainWindow::on_btSend_clicked()
     query["random_id"]=QString::number(VkApi::getRandomId(masm.assembly(),VK_API_MULTICHAT_BASE_ID+1));
     query["peer_id"]=QString::number(VK_API_MULTICHAT_BASE_ID+1);
     query["message"]=masm.assembly();
-    VkApi api(this, "***REMOVED***");
-    connect(&api, SIGNAL(requestFinished(QNetworkReply*)), this, SLOT(VkApiRequestFinished(QNetworkReply*)));
+    VkApi api("***REMOVED***");
+    connect(&api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(VkApiRequestFinished(QJsonDocument)));
     api.sendRequest("messages.send", query);
 }
 
@@ -100,8 +100,8 @@ void MainWindow::on_chkAddSignature_stateChanged(int arg1)
     updateMsgPreview();
 }
 
-void MainWindow::VkApiRequestFinished(QNetworkReply *r)
+void MainWindow::VkApiRequestFinished(QJsonDocument r)
 {
     qDebug()<<"F!";
-    qDebug()<<r->readAll();
+    qDebug()<<r.toJson();
 }

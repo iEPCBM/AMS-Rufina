@@ -14,7 +14,7 @@ DialogAddChat::~DialogAddChat()
     delete ui;
 }
 
-void DialogAddChat::onChatGot(QJsonDocument json_doc)
+void DialogAddChat::onChatGot()
 {
     qDebug()<<"got";
 }
@@ -37,17 +37,29 @@ void DialogAddChat::findChats()
     uint32_t id=1;
     while(m_isSearching) {
         VkChat chat(id,"");
-        connect(&chat,SIGNAL(dataWasGot(QJsonDocument)),this, SLOT(onChatGot(QJsonDocument)));
+        connect(&chat,SIGNAL(dataWasGot()),this, SLOT(onChatGot()));
         chat.getConversationData();
+        if (!chat.isValid()) {
+            m_isSearching = false;
+            break;
+        }
         id++;
-        addChatToTable();
+        //m_listChats.push_back(chat);
+        //addChatToTable(chat);
     }
 }
 
-void DialogAddChat::addChatToTable()
+void DialogAddChat::addChatToTable(VkChat chat)
 {
     ui->tableChats->insertRow ( ui->tableChats->rowCount() );
-    ui->tableChats->setItem ( ui->tableChats->rowCount()-1,
-                             0,
-                             new QTableWidgetItem("123"));
+    int lastRow = ui->tableChats->rowCount()-1;
+    ui->tableChats->setItem
+            (lastRow,
+             0,
+             new QTableWidgetItem(chat.getId()));
+    ui->tableChats->setItem
+            (lastRow,
+             1,
+             new QTableWidgetItem(chat.getTitle()));
+
 }

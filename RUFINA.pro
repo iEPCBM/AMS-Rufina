@@ -26,7 +26,9 @@ SOURCES += \
     third_party/AES.cpp \
     vkApi/vkapi.cpp \
     vkApi/vkchat.cpp \
-    vkApi/vkuser.cpp
+    vkApi/vkuser.cpp \
+    vkApi/vkuserhandler.cpp \
+    vkchathandler.cpp
 
 HEADERS += \
     aesfacade.h \
@@ -46,7 +48,9 @@ HEADERS += \
     vkApi/AbstractMethod.h \
     vkApi/vkapi.h \
     vkApi/vkchat.h \
-    vkApi/vkuser.h
+    vkApi/vkuser.h \
+    vkApi/vkuserhandler.h \
+    vkchathandler.h
 
 FORMS += \
     dialogaddchat.ui \
