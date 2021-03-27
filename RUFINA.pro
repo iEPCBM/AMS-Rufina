@@ -43,6 +43,7 @@ HEADERS += \
     settings.h \
     showtokenstrategy.h \
     third_party/AES.h \
+    vkApi/AbstractMethod.h \
     vkApi/vkapi.h \
     vkApi/vkchat.h \
     vkApi/vkuser.h
