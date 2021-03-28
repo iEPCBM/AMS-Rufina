@@ -33,10 +33,12 @@ public:
 
     void setOwner(const VkUser *usrOwner);
 
+    void setId(unsigned int id);
+
 private:
     QString m_strTitle;
-    QVector<VkUser*> m_administrators;
-    VkUser *m_usrOwner;
+    QList<uint32_t> m_administratorsIds;
+    uint32_t m_ownerId;
     unsigned int m_id;
 };
 

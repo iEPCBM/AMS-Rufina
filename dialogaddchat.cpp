@@ -38,6 +38,7 @@ void DialogAddChat::findChats()
     uint32_t id=1;
     while(m_isSearching) {
         VkChatHandler chatHandler(this, id, "");
+        VkUserHandler usrHandler(this, "");
         connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
         chatHandler.getConversationData();
         if (!chatHandler.isValid()) {

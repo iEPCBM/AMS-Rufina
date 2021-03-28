@@ -1,12 +1,9 @@
 #include "vkchathandler.h"
 
-VkChatHandler::VkChatHandler(QObject *parent, uint32_t id, QString token) :
+VkChatHandler::VkChatHandler(QObject *parent, QString token) :
     QObject(parent),
-    api("***REMOVED***"),
-    m_usrHandler("***REMOVED***"),
-    m_chat(id)
+    api("***REMOVED***")
 {
-    m_id = id;
 }
 
 bool VkChatHandler::isValid()
@@ -14,11 +11,11 @@ bool VkChatHandler::isValid()
     return m_isValid;
 }
 
-void VkChatHandler::getConversationData()
+void VkChatHandler::getConversationData(uint32_t id)
 {
+    m_chat.setId(id);
     QHash<QString, QString> query;
-    query["peer_ids"]=QString::number(VK_API_MULTICHAT_BASE_ID+m_id);
-    //VkApi api(this, "***REMOVED***");
+    query["peer_ids"]=QString::number(VK_API_MULTICHAT_BASE_ID+id);
     connect(&api,SIGNAL(requestFinished(QJsonDocument)),this,SLOT(getConversationFinished(QJsonDocument)));
     api.sendRequest("messages.getConversationsById", query);
 }
@@ -39,18 +36,7 @@ void VkChatHandler::responseChatParse()
             QJsonObject objChatSettings = item.value("chat_settings").toObject();
             m_chat.setTitle(objChatSettings.value("title").toString(STR_UNKNOWN));
             uint32_t ownerId = objChatSettings.value("owner_id").toInt();
-            connect(&m_usrHandler, SIGNAL(requestFinished(QVector<VkUser*>)), this, SLOT(getOwnerFinished(QVector<VkUser*>)));
-            m_usrHandler.sendRequest(ownerId);
-            qDebug()<<"Owner done";
-            disconnect(&m_usrHandler, SIGNAL(requestFinished(QVector<VkUser*>)), this, SLOT(getOwnerFinished(QVector<VkUser*>)));
             QJsonArray adminIds = objChatSettings.value("admin_ids").toArray();
-            foreach (const QJsonValue & jsonValId, adminIds) {
-                int id = jsonValId.toInt();
-                if (id>0) {
-                    connect(&m_usrHandler, SIGNAL(requestFinished(QVector<VkUser*>)), this, SLOT(getAdminsFinished(QVector<VkUser*>)));
-                    m_usrHandler.sendRequest(id);
-                }
-            }
             m_isValid = true;
         }
     }
@@ -63,17 +49,4 @@ void VkChatHandler::getConversationFinished(QJsonDocument json_doc)
     m_jsonResp = json_doc;
     responseChatParse();
     emit dataWasGot(m_chat);
-}
-
-void VkChatHandler::getAdminsFinished(QVector<VkUser *> vec_usrs)
-{
-    m_chat.setAdministrators(vec_usrs);
-    qDebug()<<"==== Admin 0: " + vec_usrs[0]->getAssembledName();
-}
-
-void VkChatHandler::getOwnerFinished(QVector<VkUser *> vec_usrs)
-{
-    qDebug()<<vec_usrs.length();
-    m_chat.setOwner(vec_usrs.at(0));
-    qDebug()<<"==== Owner: " + vec_usrs.at(0)->getAssembledName();
 }

@@ -17,14 +17,7 @@ VkChat::VkChat()
 }
 
 VkChat::~VkChat(){
-    foreach ( VkUser* usr, m_administrators) {
-        usr = const_cast<VkUser*>(usr);
-        delete usr;
-        usr = nullptr;
-    }
-    m_administrators.clear();
-    delete m_usrOwner;
-    m_usrOwner = nullptr;
+
 }
 
 QString VkChat::getTitle() const
@@ -32,32 +25,13 @@ QString VkChat::getTitle() const
     return m_strTitle;
 }
 
-QVector<VkUser*> VkChat::getAdministrators() const
-{
-    return m_administrators;
-}
-
 unsigned int VkChat::getId() const
 {
     return m_id;
 }
 
-VkUser *VkChat::getOwner() const
+void VkChat::setId(unsigned int id)
 {
-    return m_usrOwner;
+    m_id = id;
 }
 
-void VkChat::setAdministrators(const QVector<VkUser*> &administrators)
-{
-    m_administrators = administrators;
-}
-
-void VkChat::setOwner(const VkUser* usrOwner)
-{
-    m_usrOwner = const_cast<VkUser*>(usrOwner);
-}
-
-void VkChat::setTitle(const QString &strTitle)
-{
-    m_strTitle = strTitle;
-}
