@@ -1,26 +1,30 @@
 #include "vkchat.h"
 
-VkChat::VkChat(int id, QString token):
-    api("***REMOVED***"),
-    m_usrHandler("***REMOVED***")
+VkChat::VkChat(int id, QString title, QVector<VkUser> administrators, VkUser owner)
 {
     m_id = id;
-    m_token = token;
+}
+
+VkChat::VkChat(int id)
+{
+    m_id = id;
+}
+
+VkChat::VkChat()
+{
+    m_strTitle = "";
+    m_id = 0;
 }
 
 VkChat::~VkChat(){
-    foreach (VkUser* usr, m_administrators) {
+    foreach ( VkUser* usr, m_administrators) {
+        usr = const_cast<VkUser*>(usr);
         delete usr;
         usr = nullptr;
     }
     m_administrators.clear();
     delete m_usrOwner;
     m_usrOwner = nullptr;
-}
-
-bool VkChat::isValid()
-{
-    return m_isValid;
 }
 
 QString VkChat::getTitle() const
@@ -38,7 +42,22 @@ unsigned int VkChat::getId() const
     return m_id;
 }
 
-void VkChat::setId(unsigned int id)
+VkUser *VkChat::getOwner() const
 {
-    m_id = id;
+    return m_usrOwner;
+}
+
+void VkChat::setAdministrators(const QVector<VkUser*> &administrators)
+{
+    m_administrators = administrators;
+}
+
+void VkChat::setOwner(const VkUser* usrOwner)
+{
+    m_usrOwner = const_cast<VkUser*>(usrOwner);
+}
+
+void VkChat::setTitle(const QString &strTitle)
+{
+    m_strTitle = strTitle;
 }

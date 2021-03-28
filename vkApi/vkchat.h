@@ -12,40 +12,32 @@
 
 #define STR_UNKNOWN "UNKNOWN"
 
-class VkChat : public QObject
+class VkChat
 {
-    Q_OBJECT
 public:
-    explicit VkChat(int id, QString token);
-    virtual ~VkChat();
-
-    bool isValid();
-    bool getConversationData();
+    VkChat(int id, QString title, QVector<VkUser> administrators, VkUser owner);
+    VkChat(int id);
+    VkChat();
+    ~VkChat();
 
     QString getTitle() const;
     QVector<VkUser*> getAdministrators() const;
 
     unsigned int getId() const;
-    void setId(unsigned int id);
-    void responseChatParse();
-signals:
-    void dataWasGot();
 
-public slots:
-    void getConversationFinished(QJsonDocument json_doc);
-    void getAdminsFinished(QVector<VkUser*> vec_usrs);
-    void getOwnerFinished(QVector<VkUser*> vec_usrs);
+    VkUser *getOwner() const;
+
+    void setTitle(const QString &strTitle);
+
+    void setAdministrators(const QVector<VkUser*> &administrators);
+
+    void setOwner(const VkUser *usrOwner);
+
 private:
-    QEventLoop m_loop;
-    QJsonDocument m_jsonResp;
     QString m_strTitle;
     QVector<VkUser*> m_administrators;
-    VkUser* m_usrOwner;
+    VkUser *m_usrOwner;
     unsigned int m_id;
-    QString m_token;
-    VkApi api;
-    VkUserHandler m_usrHandler;
-    bool m_isValid;
 };
 
 #endif // VKCHAT_H

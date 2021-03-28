@@ -28,7 +28,7 @@ SOURCES += \
     vkApi/vkchat.cpp \
     vkApi/vkuser.cpp \
     vkApi/vkuserhandler.cpp \
-    vkchathandler.cpp
+    vkApi/vkchathandler.cpp
 
 HEADERS += \
     aesfacade.h \
@@ -50,7 +50,7 @@ HEADERS += \
     vkApi/vkchat.h \
     vkApi/vkuser.h \
     vkApi/vkuserhandler.h \
-    vkchathandler.h
+    vkApi/vkchathandler.h
 
 FORMS += \
     dialogaddchat.ui \

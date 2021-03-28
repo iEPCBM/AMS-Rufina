@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "vkApi/vkapi.h"
 #include "vkApi/vkchat.h"
+#include "vkApi/vkchathandler.h"
 
 namespace Ui {
 class DialogAddChat;
@@ -18,7 +19,7 @@ public:
     ~DialogAddChat();
 
 public slots:
-    void onChatGot();
+    void onChatGot(VkChat chat);
 
 private slots:
     void on_btStartStopFind_clicked();

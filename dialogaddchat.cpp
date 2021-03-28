@@ -14,9 +14,10 @@ DialogAddChat::~DialogAddChat()
     delete ui;
 }
 
-void DialogAddChat::onChatGot()
+void DialogAddChat::onChatGot(VkChat chat)
 {
     qDebug()<<"got";
+    addChatToTable(chat);
 }
 
 
@@ -36,10 +37,10 @@ void DialogAddChat::findChats()
 {
     uint32_t id=1;
     while(m_isSearching) {
-        VkChat chat(id,"");
-        connect(&chat,SIGNAL(dataWasGot()),this, SLOT(onChatGot()));
-        chat.getConversationData();
-        if (!chat.isValid()) {
+        VkChatHandler chatHandler(this, id, "");
+        connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
+        chatHandler.getConversationData();
+        if (!chatHandler.isValid()) {
             m_isSearching = false;
             break;
         }
@@ -56,7 +57,7 @@ void DialogAddChat::addChatToTable(VkChat chat)
     ui->tableChats->setItem
             (lastRow,
              0,
-             new QTableWidgetItem(chat.getId()));
+             new QTableWidgetItem(QString::number(chat.getId())));
     ui->tableChats->setItem
             (lastRow,
              1,
