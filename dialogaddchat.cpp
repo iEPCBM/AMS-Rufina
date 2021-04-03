@@ -72,10 +72,17 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
             (lastRow,
              0,
              new QTableWidgetItem(QString::number(chat.getId())));
-    ui->tableChats->setItem
-            (lastRow,
-             1,
-             new QTableWidgetItem(chat.getTitle()));
+    if (chat.hasTitle()) {
+        ui->tableChats->setItem
+                (lastRow,
+                 1,
+                 new QTableWidgetItem(chat.getTitle()));
+    } else {
+        ui->tableChats->setItem
+                (lastRow,
+                 1,
+                 new QTableWidgetItem(STR_UNKNOWN));
+    }
     QString strAdmList = "";
     if (chat.hasOwner()) {
         strAdmList = "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";

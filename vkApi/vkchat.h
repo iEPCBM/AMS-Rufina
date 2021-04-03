@@ -36,7 +36,7 @@ public:
 
     bool hasOwner();
     bool hasAdmins();
-
+    bool hasTitle();
 private:
     QString m_strTitle;
     QList<int> m_administratorsIds;

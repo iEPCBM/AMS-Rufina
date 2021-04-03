@@ -38,13 +38,12 @@ void VkChatHandler::responseChatParse()
         return;
     }
     QJsonObject responseObj = json_obj.value("response").toObject();
-    m_chat.setTitle(STR_UNKNOWN);
     //m_administrators[0] = STR_UNKNOWN;
     if (responseObj.value("count").toInt()==1) {
         QJsonObject item = responseObj.value("items").toArray()[0].toObject();
         if (item.value("peer").toObject().value("type").toString()=="chat") {
             QJsonObject objChatSettings = item.value("chat_settings").toObject();
-            m_chat.setTitle(objChatSettings.value("title").toString(STR_UNKNOWN));
+            m_chat.setTitle(objChatSettings.value("title").toString(""));
             m_chat.setOwnerId(objChatSettings.value("owner_id").toInt());
             QJsonArray adminIds = objChatSettings.value("admin_ids").toArray();
             QList<int> adms;

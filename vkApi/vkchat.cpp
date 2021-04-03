@@ -70,3 +70,8 @@ bool VkChat::hasAdmins()
     return !m_administratorsIds.empty();
 }
 
+bool VkChat::hasTitle()
+{
+    return !m_strTitle.isEmpty();
+}
+
