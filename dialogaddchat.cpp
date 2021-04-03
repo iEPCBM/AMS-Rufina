@@ -48,11 +48,9 @@ void DialogAddChat::findChats()
         }
         usrHandler.clear();
         VkUser owner;
-        if (isUserId(chat.getOwnerId()) && chat.getOwnerId()!=0) {
+        if (chat.hasOwner()) {
             usrHandler.sendRequest(chat.getOwnerId());
             owner = usrHandler.getUsers().at(0);
-        } else {
-            owner.setName(STR_UNKNOWN);
         }
 
         if (!chatHandler.isValid()) {
@@ -79,16 +77,18 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
              1,
              new QTableWidgetItem(chat.getTitle()));
     QString strAdmList = "";
-    if (owner.getAssembledName().trimmed() != QString(STR_UNKNOWN).trimmed()) {
-        strAdmList += "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";
+    if (chat.hasOwner()) {
+        strAdmList = "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";
         strAdmList += QString(" ")+STR_OWNER_MARKER+"\n";
         strAdmList += "</p>\n";
     }
     else {
-        strAdmList = owner.getAssembledName().trimmed();
+        strAdmList = STR_UNKNOWN;
     }
-    foreach (VkUser user, admins) {
-        strAdmList += "<p><a href=\"https://vk.com/id"+QString::number(user.getId())+"\">" + user.getAssembledName() + "</a></p>\n";
+    if (chat.hasAdmins()) {
+        foreach (VkUser user, admins) {
+            strAdmList += "<p><a href=\"https://vk.com/id"+QString::number(user.getId())+"\">" + user.getAssembledName() + "</a></p>\n";
+        }
     }
     QLabel *lbAdmins = new QLabel(strAdmList.trimmed(), ui->tableChats);
     lbAdmins->setTextFormat(Qt::RichText);

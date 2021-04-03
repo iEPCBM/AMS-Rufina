@@ -10,7 +10,7 @@
 #include "vkApi/vkuserhandler.h"
 #include "settings.h"
 
-#define STR_UNKNOWN "_н/д_"
+#define STR_UNKNOWN "Нет данных"
 
 class VkChat
 {
