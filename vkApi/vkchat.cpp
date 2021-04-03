@@ -60,3 +60,13 @@ void VkChat::setOwnerId(const int &ownerId)
     m_ownerId = ownerId;
 }
 
+bool VkChat::hasOwner()
+{
+    return m_ownerId > 0;
+}
+
+bool VkChat::hasAdmins()
+{
+    return !m_administratorsIds.empty();
+}
+

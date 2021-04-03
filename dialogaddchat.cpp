@@ -34,7 +34,7 @@ void DialogAddChat::on_btStartStopFind_clicked()
 void DialogAddChat::findChats()
 {
     uint32_t id=1;
-    while(m_isSearching) {
+    while (m_isSearching) {
         VkChatHandler chatHandler(this, "");
         VkUserHandler usrHandler(this, "");
         connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
@@ -80,8 +80,8 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
              new QTableWidgetItem(chat.getTitle()));
     QString strAdmList = "";
     if (owner.getAssembledName().trimmed() != QString(STR_UNKNOWN).trimmed()) {
-        "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";
-        strAdmList+=QString(" ")+STR_OWNER_MARKER+"\n";
+        strAdmList += "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";
+        strAdmList += QString(" ")+STR_OWNER_MARKER+"\n";
         strAdmList += "</p>\n";
     }
     else {

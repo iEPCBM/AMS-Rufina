@@ -34,6 +34,9 @@ public:
     int getOwnerId() const;
     void setOwnerId(const int &ownerId);
 
+    bool hasOwner();
+    bool hasAdmins();
+
 private:
     QString m_strTitle;
     QList<int> m_administratorsIds;
