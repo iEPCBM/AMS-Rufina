@@ -30,8 +30,33 @@ unsigned int VkChat::getId() const
     return m_id;
 }
 
+void VkChat::setTitle(const QString &strTitle)
+{
+    m_strTitle = strTitle;
+}
+
 void VkChat::setId(unsigned int id)
 {
     m_id = id;
+}
+
+QList<int> VkChat::getAdministratorsIds() const
+{
+    return m_administratorsIds;
+}
+
+void VkChat::setAdministratorsIds(const QList<int> &administratorsIds)
+{
+    m_administratorsIds = administratorsIds;
+}
+
+int VkChat::getOwnerId() const
+{
+    return m_ownerId;
+}
+
+void VkChat::setOwnerId(const int &ownerId)
+{
+    m_ownerId = ownerId;
 }
 

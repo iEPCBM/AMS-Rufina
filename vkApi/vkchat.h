@@ -10,7 +10,7 @@
 #include "vkApi/vkuserhandler.h"
 #include "settings.h"
 
-#define STR_UNKNOWN "UNKNOWN"
+#define STR_UNKNOWN "_н/д_"
 
 class VkChat
 {
@@ -21,24 +21,23 @@ public:
     ~VkChat();
 
     QString getTitle() const;
-    QVector<VkUser*> getAdministrators() const;
 
     unsigned int getId() const;
 
-    VkUser *getOwner() const;
-
     void setTitle(const QString &strTitle);
-
-    void setAdministrators(const QVector<VkUser*> &administrators);
-
-    void setOwner(const VkUser *usrOwner);
 
     void setId(unsigned int id);
 
+    QList<int> getAdministratorsIds() const;
+    void setAdministratorsIds(const QList<int> &administratorsIds);
+
+    int getOwnerId() const;
+    void setOwnerId(const int &ownerId);
+
 private:
     QString m_strTitle;
-    QList<uint32_t> m_administratorsIds;
-    uint32_t m_ownerId;
+    QList<int> m_administratorsIds;
+    int m_ownerId=0;
     unsigned int m_id;
 };
 

@@ -26,7 +26,7 @@ void VkApi::sendRequest(QString method, QHash<QString, QString> args)
 
     connect(netMngr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
     netMngr->get(QNetworkRequest(QUrl(strUrl)));
-    m_loop.exec();
+    m_loop.exec(); //NOTE: Stop main thread
 }
 
 QByteArray VkApi::getResponse()
@@ -34,7 +34,7 @@ QByteArray VkApi::getResponse()
     return m_byteArrReply;
 }
 
-QJsonDocument VkApi::getParsedResponse()
+QJsonDocument VkApi::parseResponse()
 {
     m_isError = false;
     QJsonParseError parseError;
@@ -53,11 +53,17 @@ int32_t VkApi::getRandomId(QString strMsg, int peerId)
     return val;
 }
 
+QJsonDocument VkApi::getJsonResponse() const
+{
+    return m_jsonResponse;
+}
+
 void VkApi::onFinished(QNetworkReply *r)
 {
     m_loop.exit();
     m_byteArrReply = r->readAll();
-    emit requestFinished(getParsedResponse());
+    m_jsonResponse = parseResponse();
+    emit requestFinished(m_jsonResponse);
 }
 
 QString VkApi::assemblyQuery(QHash<QString, QString> args)

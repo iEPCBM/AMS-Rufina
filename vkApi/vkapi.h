@@ -26,9 +26,9 @@ public:
     ~VkApi();
     void sendRequest(QString method, QHash<QString, QString> args);
     QByteArray getResponse();
-    QJsonDocument getParsedResponse();
-    static int32_t getRandomId(QString strMsg, int peerId);
 
+    static int32_t getRandomId(QString strMsg, int peerId);
+    QJsonDocument getJsonResponse() const;
     bool isError() const;
 
 signals:
@@ -38,6 +38,7 @@ public slots:
     void onFinished(QNetworkReply *r);
 
 private:
+    QJsonDocument parseResponse();
     QEventLoop m_loop;
 
     QByteArray m_byteArrReply;
@@ -47,6 +48,7 @@ private:
     QNetworkAccessManager *netMngr;
     QScopedPointer<QNetworkReply, QScopedPointerDeleteLater> netReply;
     bool m_isError = false;
+    QJsonDocument m_jsonResponse;
 };
 
 #endif // VKAPI_H

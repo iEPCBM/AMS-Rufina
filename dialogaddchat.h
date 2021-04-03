@@ -2,9 +2,12 @@
 #define DIALOGADDCHAT_H
 
 #include <QDialog>
+#include <QtWidgets>
 #include "vkApi/vkapi.h"
 #include "vkApi/vkchat.h"
 #include "vkApi/vkchathandler.h"
+
+#define STR_OWNER_MARKER "(создатель)"
 
 namespace Ui {
 class DialogAddChat;
@@ -28,9 +31,16 @@ private:
     Ui::DialogAddChat *ui;
     bool m_isSearching = false;
     void findChats();
-    void addChatToTable(VkChat chat);
+    void getAdmins();
+    void getOwner();
+    void addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins);
+    void addActionButtonsToRow(int row);
+    void startSearching();
+    void stopSearching();
+    QList<uint32_t> filterUserIds(QList<int> usrIds);
+    inline bool isUserId(int id);
+    //VkChatHandler m_chatHandler;
     QList<VkChat> m_listChats;
-
 };
 
 #endif // DIALOGADDCHAT_H
