@@ -6,6 +6,7 @@ DialogAddChat::DialogAddChat(QWidget *parent) :
     ui(new Ui::DialogAddChat)
 {
     ui->setupUi(this);
+    m_settings = Settings::getInstance();
     qDebug()<<"Well";
 }
 
@@ -26,7 +27,8 @@ void DialogAddChat::onAddChat(VkChat *chat)
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
                              "Информация о данной беседе неполная. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
-
+            DialogChatConfirmation dlgConfirmation(chat, m_settings->getVkToken(), this);
+            dlgConfirmation.exec();
         }
     }
 }

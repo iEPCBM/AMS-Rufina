@@ -8,6 +8,8 @@
 #include "vkApi/vkchat.h"
 #include "vkApi/vkchathandler.h"
 #include "widgets/chatactionbutton.h"
+#include "dialogs/dialogchatconfirmation.h"
+#include "settings.h"
 
 #define STR_OWNER_MARKER "(создатель)"
 
@@ -45,6 +47,7 @@ private:
     inline bool isUserId(int id);
     //VkChatHandler m_chatHandler;
     QList<VkChat> m_listChats;
+    Settings *m_settings;
 };
 
 #endif // DIALOGADDCHAT_H
