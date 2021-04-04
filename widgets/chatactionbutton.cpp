@@ -1,6 +1,6 @@
 #include "chatactionbutton.h"
 
-ChatActionButton::ChatActionButton(QString &text, VkChat *chat, QWidget *parent):QPushButton(text, parent)
+ChatActionButton::ChatActionButton(QString text, VkChat *chat, QWidget *parent):QPushButton(text, parent)
 {
     m_chat = chat;
     connect(this, SIGNAL(clicked()), this, SLOT(doChatAction()));
@@ -8,7 +8,6 @@ ChatActionButton::ChatActionButton(QString &text, VkChat *chat, QWidget *parent)
 
 ChatActionButton::~ChatActionButton()
 {
-    delete m_chat;
     m_chat = NULL;
 }
 

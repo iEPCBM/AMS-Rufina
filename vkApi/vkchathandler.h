@@ -20,6 +20,7 @@ public:
 
     void clear();
     bool isValid();
+    bool hasError();
     void getConversationData(uint32_t id);
 
     unsigned int getId() const;

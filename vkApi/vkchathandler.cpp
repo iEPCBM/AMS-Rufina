@@ -18,6 +18,11 @@ bool VkChatHandler::isValid()
     return m_isValid;
 }
 
+bool VkChatHandler::hasError()
+{
+    return m_jsonResp.object().contains("error");
+}
+
 void VkChatHandler::getConversationData(uint32_t id)
 {
     m_chat.setId(id);

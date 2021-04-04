@@ -7,6 +7,7 @@
 #include "vkApi/vkapi.h"
 #include "vkApi/vkchat.h"
 #include "vkApi/vkchathandler.h"
+#include "widgets/chatactionbutton.h"
 
 #define STR_OWNER_MARKER "(создатель)"
 
@@ -24,6 +25,7 @@ public:
 
 public slots:
     void onChatGot(VkChat chat);
+    void onAddChat(VkChat *chat);
 
 private slots:
     void on_btStartStopFind_clicked();

@@ -20,6 +20,11 @@ void DialogAddChat::onChatGot(VkChat chat)
     //m_listChats.append(chat);
 }
 
+void DialogAddChat::onAddChat(VkChat *chat)
+{
+    QMessageBox::information(this,chat->getTitle(),chat->getTitle());
+}
+
 
 void DialogAddChat::on_btStartStopFind_clicked()
 {
@@ -53,7 +58,7 @@ void DialogAddChat::findChats()
             owner = usrHandler.getUsers().at(0);
         }
 
-        if (!chatHandler.isValid()) {
+        if (chatHandler.hasError()) {
             stopSearching();
             break;
         }
@@ -107,7 +112,7 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
              lbAdmins);
 
 
-    QPushButton *btAddChat = new QPushButton("Добавить", ui->tableChats);
+    ChatActionButton *btAddChat = new ChatActionButton("Добавить", &m_listChats[actionId], ui->tableChats);
     QWidget *widgetWrapper = new QWidget();
     QVBoxLayout *layoutBt = new QVBoxLayout(widgetWrapper);
     QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -123,7 +128,7 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     ui->tableChats->resizeRowToContents(lastRow);
     ui->tableChats->resizeColumnsToContents();
 
-    connect(btAddChat, SIGNAL(clicked()), this, [btAddChat, this](){addChat(&this->m_listChats[actionId]);});
+    connect(btAddChat, SIGNAL(cabtClicked(VkChat*)), this, SLOT(onAddChat(VkChat*)));
 
     lbAdmins         = NULL;
     btAddChat        = NULL;
