@@ -58,13 +58,13 @@ void DialogAddChat::findChats()
             break;
         }
         id++;
-        //m_listChats.push_back(chat);
-        addChatToTable(chatHandler.getChat(), owner, admins);
+        m_listChats.append(chat);
+        addChatToTable(chatHandler.getChat(), owner, admins, m_listChats.length()-1);
         chatHandler.clear();
     }
 }
 
-void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins)
+void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins, uint32_t actionId)
 {
     ui->tableChats->insertRow ( ui->tableChats->rowCount() );
     int lastRow = ui->tableChats->rowCount()-1;
@@ -100,13 +100,37 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     QLabel *lbAdmins = new QLabel(strAdmList.trimmed(), ui->tableChats);
     lbAdmins->setTextFormat(Qt::RichText);
     lbAdmins->setOpenExternalLinks(true);
+    lbAdmins->setMargin(5);
     ui->tableChats->setCellWidget(
              lastRow,
              2,
              lbAdmins);
-    lbAdmins = NULL;
+
+
+    QPushButton *btAddChat = new QPushButton("Добавить", ui->tableChats);
+    QWidget *widgetWrapper = new QWidget();
+    QVBoxLayout *layoutBt = new QVBoxLayout(widgetWrapper);
+    QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *vertSpacerFooter= new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    layoutBt->addItem(vertSpacerHeader);
+    layoutBt->addWidget(btAddChat);
+    layoutBt->addItem(vertSpacerFooter);
+    ui->tableChats->setCellWidget(
+             lastRow,
+             3,
+             widgetWrapper);
+
     ui->tableChats->resizeRowToContents(lastRow);
     ui->tableChats->resizeColumnsToContents();
+
+    connect(btAddChat, SIGNAL(clicked()), this, [btAddChat, this](){addChat(&this->m_listChats[actionId]);});
+
+    lbAdmins         = NULL;
+    btAddChat        = NULL;
+    widgetWrapper    = NULL;
+    layoutBt         = NULL;
+    vertSpacerHeader = NULL;
+    vertSpacerFooter = NULL;
 }
 
 void DialogAddChat::startSearching()
@@ -123,6 +147,11 @@ void DialogAddChat::stopSearching()
     m_isSearching = false;
     ui->btStartStopFind->setText("Начать поиск");
     ui->progressBar->setMaximum(1);
+}
+
+void DialogAddChat::addChat(VkChat *chat)
+{
+    QMessageBox::information(this,chat->getTitle(),chat->getTitle());
 }
 
 QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)

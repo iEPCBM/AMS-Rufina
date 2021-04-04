@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QtWidgets>
+#include <QSpacerItem>
 #include "vkApi/vkapi.h"
 #include "vkApi/vkchat.h"
 #include "vkApi/vkchathandler.h"
@@ -33,10 +34,11 @@ private:
     void findChats();
     void getAdmins();
     void getOwner();
-    void addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins);
+    void addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins, uint32_t actionId);
     void addActionButtonsToRow(int row);
     void startSearching();
     void stopSearching();
+    void addChat(VkChat *chat);
     QList<uint32_t> filterUserIds(QList<int> usrIds);
     inline bool isUserId(int id);
     //VkChatHandler m_chatHandler;
