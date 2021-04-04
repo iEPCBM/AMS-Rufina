@@ -26,6 +26,7 @@ SOURCES += \
     third_party/AES.cpp \
     vkApi/vkapi.cpp \
     vkApi/vkchat.cpp \
+    vkApi/vkmessagedelivery.cpp \
     vkApi/vkuser.cpp \
     vkApi/vkuserhandler.cpp \
     vkApi/vkchathandler.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     vkApi/AbstractMethod.h \
     vkApi/vkapi.h \
     vkApi/vkchat.h \
+    vkApi/vkmessagedelivery.h \
     vkApi/vkuser.h \
     vkApi/vkuserhandler.h \
     vkApi/vkchathandler.h \

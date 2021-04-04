@@ -6,7 +6,8 @@
 #include "dialogsettings.h"
 #include "vkApi/vkapi.h"
 #include "messageassembler.h"
-#include "vkApi/vkapi.h"
+#include "vkApi/vkmessagedelivery.h"
+#include "settings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -46,5 +47,6 @@ public slots:
 private:
     Ui::MainWindow *ui;
     void updateMsgPreview();
+    Settings *m_settings;
 };
 #endif // MAINWINDOW_H

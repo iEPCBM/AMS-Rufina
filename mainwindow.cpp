@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     updateMsgPreview();
+    m_settings = Settings::getInstance();
 }
 
 MainWindow::~MainWindow()
@@ -65,13 +66,10 @@ void MainWindow::on_btCheckAllFloors_clicked()
 void MainWindow::on_btSend_clicked()
 {
     MessageAssembler masm(ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
-    QHash<QString, QString> query;
-    query["random_id"]=QString::number(VkApi::getRandomId(masm.assembly(),VK_API_MULTICHAT_BASE_ID+1));
-    query["peer_id"]=QString::number(VK_API_MULTICHAT_BASE_ID+1);
-    query["message"]=masm.assembly();
-    VkApi api("***REMOVED***");
-    connect(&api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(VkApiRequestFinished(QJsonDocument)));
-    api.sendRequest("messages.send", query);
+    VkMessageDelivery msgDelivery(m_settings->getVkToken(), this);
+    msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+1, masm.assembly());
+
+    //connect(&api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(VkApiRequestFinished(QJsonDocument)));
 }
 
 void MainWindow::updateMsgPreview()

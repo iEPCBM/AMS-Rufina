@@ -22,7 +22,13 @@ void DialogAddChat::onChatGot(VkChat chat)
 
 void DialogAddChat::onAddChat(VkChat *chat)
 {
-    QMessageBox::information(this,chat->getTitle(),chat->getTitle());
+    if (chat->getTitle().isEmpty()||chat->getOwnerId()==0) {
+        QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
+                             "Информация о данной беседе неполная. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
+        if (btClicked==QMessageBox::Ok) {
+
+        }
+    }
 }
 
 
@@ -152,11 +158,6 @@ void DialogAddChat::stopSearching()
     m_isSearching = false;
     ui->btStartStopFind->setText("Начать поиск");
     ui->progressBar->setMaximum(1);
-}
-
-void DialogAddChat::addChat(VkChat *chat)
-{
-    QMessageBox::information(this,chat->getTitle(),chat->getTitle());
 }
 
 QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)
