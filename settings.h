@@ -1,11 +1,10 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "vkApi/vkchat.h"
 #include <QXmlStreamReader>
 #include <QFile>
 
-#include "floor.h"
-#include <QVector>
 
 #define CONFIG_WRAPPER_TAG "config"
 #define SEQURE_WRAPPER_TAG "secure"
@@ -23,7 +22,7 @@
 #define VALUE_ATTR "value"
 #define NAME_ATTR "name"
 #define ID_ATTR "id"
-#define HASH_SIGNATURE_ATTR "hashSig"
+#define FLOOR_ATTR "floor"
 
 class Settings
 {
@@ -62,7 +61,7 @@ private:
     QString m_tokenSignature;
     QString m_vkToken;
     bool m_isEncrypted;
-    QVector<Floor> m_floors;
+    QHash<uint8_t, VkChat> m_floors; // n floor - Chat table
 };
 
 #endif // SETTINGS_H

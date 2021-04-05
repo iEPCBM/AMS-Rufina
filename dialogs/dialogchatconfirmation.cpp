@@ -7,6 +7,7 @@ DialogChatConfirmation::DialogChatConfirmation(VkChat *chat, QString token, QWid
     m_msgDelivery(token, this)
 {
     ui->setupUi(this);
+    ui->leCodeInput->setValidator(new QRegExpValidator(QRegExp("^[a-fA-F0-9]+$"), this));
     m_chat = chat;
     generateCode();
 }
@@ -63,7 +64,10 @@ void DialogChatConfirmation::on_buttonBox_accepted()
     QByteArray checkHash = crc32b(m_data2hash.toUtf8()).toHex();
     if (ui->leCodeInput->text().toLower()!=QString::fromUtf8(checkHash)) {
         QMessageBox::StandardButton bt = QMessageBox::warning(this, "Ошибка", "Код не совпадает", QMessageBox::Retry|QMessageBox::Ok);
-        if (bt==QMessageBox::Retry){generateCode();}
+        if (bt==QMessageBox::Retry){
+            ui->leCodeInput->clear();
+            generateCode();
+        }
         else {this->close();}
     } else {
         m_isConfirmated = true;

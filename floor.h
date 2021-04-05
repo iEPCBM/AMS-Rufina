@@ -5,6 +5,7 @@
 #include <QCryptographicHash>
 #include <QMessageBox>
 
+
 #define PSEUDO_ID -1
 #define CONFIRMATION_HASH_SALT "PROSTI, RUFINA"
 #define STATEMENT_SEPARATOR "_&#_VERA_#&_"
@@ -12,18 +13,12 @@
 class Floor
 {
 public:
-    Floor(int chat_id, int floorNum, QString strChatTitle);
-
-    int vkChatID() const;
+    Floor(uint8_t floorNum, int chat_id, QString strChatTitle);
+    Floor(uint8_t floorNum);
     QByteArray getHashSum();
 
 private:
-    inline bool checkChatID (int ID);
+    uint8_t m_floorNum;
 
-    int m_vkChatID;
-    unsigned char m_floorNum;
-    QString m_strChatTitle;
-    QString m_hashSignature;
 };
-
 #endif // FLOOR_H

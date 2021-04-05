@@ -8,14 +8,14 @@
 #include "vkApi/vkapi.h"
 #include "vkApi/vkuser.h"
 #include "vkApi/vkuserhandler.h"
-#include "settings.h"
 
 #define STR_UNKNOWN "Нет данных"
 
 class VkChat
 {
 public:
-    VkChat(int id, QString title, QVector<VkUser> administrators, VkUser owner);
+    VkChat(int id, QString title, QList<int> administratorsIds, int ownerId);
+    VkChat(int id, QString title);
     VkChat(int id);
     VkChat();
     ~VkChat();

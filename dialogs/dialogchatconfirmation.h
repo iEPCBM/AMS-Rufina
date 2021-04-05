@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QTime>
 #include <QDate>
+#include <QRegExpValidator>
+#include <QMessageBox>
 #include "vkApi/vkchat.h"
 #include "vkApi/vkmessagedelivery.h"
 

@@ -8,7 +8,40 @@ Settings::Settings(QString strPath)
 
 void Settings::save()
 {
+    QFile file(m_strPath);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qDebug()<<"err_parse";
+        return;
+    }
+    QXmlStreamWriter xml(&file);
+    QXmlStreamAttributes attributes;
+    xml.setAutoFormatting(true);
+    xml.writeStartDocument();
+    xml.writeStartElement(CONFIG_WRAPPER_TAG);
+        xml.writeStartElement(HIGHTLIGHT_SYMBOLS_TAG);
+        xml.writeAttribute(VALUE_ATTR, m_hsymbols);
+        xml.writeEndElement(); // HIGHTLIGHT_SYMBOLS_TAG
 
+        xml.writeStartElement(SIGNATURE_TAG);
+        xml.writeAttribute(VALUE_ATTR, m_signature);
+        xml.writeEndElement(); // SIGNATURE_TAG
+
+        xml.writeStartElement(SEQURE_WRAPPER_TAG);
+            xml.writeStartElement(ENCRY_TAG);
+            xml.writeAttribute(VALUE_ATTR, QString::number(m_isEncrypted?1:0));
+            xml.writeEndElement(); // ENCRY_TAG
+
+            xml.writeStartElement(VK_TOKEN_TAG);
+            xml.writeAttribute(VALUE_ATTR, m_vkToken);
+            xml.writeEndElement(); // VK_TOKEN_TAG
+
+            xml.writeStartElement(CHATS_WRAPPER_TAG);
+
+            xml.writeEndElement(); // CHATS_WRAPPER_TAG
+        xml.writeEndElement(); // SEQURE_WRAPPER_TAG
+    xml.writeEndElement(); // CONFIG_WRAPPER_TAG
+    xml.writeEndDocument();
+    file.close();
 }
 
 void Settings::extract()
@@ -74,7 +107,7 @@ void Settings::extract()
                             } else {
                                 m_vkToken = "";
                             }
-                        } /*else if (xml.name()==CHATS_WRAPPER_TAG) {
+                        } else if (xml.name()==CHATS_WRAPPER_TAG) {
                             xml.readNext();
                             attributes = xml.attributes();
                             while (!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == CHATS_WRAPPER_TAG))
@@ -82,15 +115,30 @@ void Settings::extract()
                                 if (xml.tokenType() == QXmlStreamReader::StartElement)
                                 {
                                     if (xml.name()==CHAT_TAG) {
-                                        if(attributes.hasAttribute(VALUE_ATTR)) {
-                                            m_isEncrypted = attributes.value(VALUE_ATTR).toInt()?true:false;
-                                        } else {
-                                            m_signature = false;
+                                        VkChat chat;
+                                        uint8_t floorN;
+                                        if (attributes.hasAttribute(NAME_ATTR)) {
+                                            chat.setTitle(attributes.value(NAME_ATTR).toString());
                                         }
+                                        if (attributes.hasAttribute(ID_ATTR)) {
+                                            chat.setId(attributes.value(ID_ATTR).toUInt());
+                                        }
+                                        if (attributes.hasAttribute(FLOOR_ATTR)) {
+                                            floorN = attributes.value(FLOOR_ATTR).toUInt();
+                                        } else {
+                                            floorN = 0;
+                                        }
+                                        if (m_floors.contains(floorN)) {
+                                            //TODO: Warning box
+                                        }
+                                        m_floors[floorN]=chat;
+                                        qDebug()<<floorN<<" "<<chat.getTitle();
                                     }
                                 }
+                                xml.readNext();
+                                attributes = xml.attributes();
                             }
-                        }*/
+                        }
                     }
                     xml.readNext();
                     attributes = xml.attributes();

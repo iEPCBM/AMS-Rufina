@@ -1,8 +1,17 @@
 #include "vkchat.h"
 
-VkChat::VkChat(int id, QString title, QVector<VkUser> administrators, VkUser owner)
+VkChat::VkChat(int id, QString title, QList<int> administratorsIds, int ownerId)
 {
     m_id = id;
+    m_strTitle = title;
+    m_administratorsIds = administratorsIds;
+    m_ownerId = ownerId;
+}
+
+VkChat::VkChat(int id, QString title)
+{
+    m_id = id;
+    m_strTitle = title;
 }
 
 VkChat::VkChat(int id)
