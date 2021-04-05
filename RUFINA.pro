@@ -16,6 +16,7 @@ SOURCES += \
     dialogcreatepassword.cpp \
     dialogpasswordenter.cpp \
     dialogs/dialogchatconfirmation.cpp \
+    dialogs/dialogchatsettings.cpp \
     dialogsettings.cpp \
     dialogtoken.cpp \
     floor.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     dialogcreatepassword.h \
     dialogpasswordenter.h \
     dialogs/dialogchatconfirmation.h \
+    dialogs/dialogchatsettings.h \
     dialogsettings.h \
     dialogtoken.h \
     floor.h \
@@ -64,6 +66,7 @@ FORMS += \
     dialogcreatepassword.ui \
     dialogpasswordenter.ui \
     dialogs/dialogchatconfirmation.ui \
+    dialogs/dialogchatsettings.ui \
     dialogsettings.ui \
     dialogsettings.ui \
     dialogtoken.ui \

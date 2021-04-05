@@ -48,6 +48,11 @@ void DialogChatConfirmation::generateCode()
     m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat->getId(), STR_CONFIRMATION_PREAMBLE+QString::fromUtf8(crcHash));
 }
 
+bool DialogChatConfirmation::isConfirmated() const
+{
+    return m_isConfirmated;
+}
+
 void DialogChatConfirmation::on_btSendAgain_clicked()
 {
     generateCode();
@@ -56,8 +61,12 @@ void DialogChatConfirmation::on_btSendAgain_clicked()
 void DialogChatConfirmation::on_buttonBox_accepted()
 {
     QByteArray checkHash = crc32b(m_data2hash.toUtf8()).toHex();
-    if (ui->leCodeInput->text()!=QString::fromUtf8(checkHash)) {
+    if (ui->leCodeInput->text().toLower()!=QString::fromUtf8(checkHash)) {
         QMessageBox::StandardButton bt = QMessageBox::warning(this, "Ошибка", "Код не совпадает", QMessageBox::Retry|QMessageBox::Ok);
-        if (bt==QMessageBox::Retry){this->ui->buttonBox->blockSignals(true);}
+        if (bt==QMessageBox::Retry){generateCode();}
+        else {this->close();}
+    } else {
+        m_isConfirmated = true;
+        this->close();
     }
 }

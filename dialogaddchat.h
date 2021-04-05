@@ -9,6 +9,7 @@
 #include "vkApi/vkchathandler.h"
 #include "widgets/chatactionbutton.h"
 #include "dialogs/dialogchatconfirmation.h"
+#include "dialogs/dialogchatsettings.h"
 #include "settings.h"
 
 #define STR_OWNER_MARKER "(создатель)"

@@ -22,13 +22,16 @@ void DialogAddChat::onChatGot(VkChat chat)
 }
 
 void DialogAddChat::onAddChat(VkChat *chat)
-{
+{   DialogChatSettings dlgChatStg(chat, this);
     if (chat->getTitle().isEmpty()||chat->getOwnerId()==0) {
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
-                             "Информация о данной беседе неполная. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
+                             "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
             DialogChatConfirmation dlgConfirmation(chat, m_settings->getVkToken(), this);
             dlgConfirmation.exec();
+            if (dlgConfirmation.isConfirmated()) {
+
+            }
         }
     }
 }
