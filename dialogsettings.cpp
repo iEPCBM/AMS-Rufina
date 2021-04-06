@@ -45,7 +45,9 @@ void DialogSettings::on_chbUseKeyCry_stateChanged(int arg1)
     if (arg1) {
         createPassword();
     } else {
-        QMessageBox::question(this,"Вы уверены?","Вы уверены?");
+        if (QMessageBox::question(this,"Вы уверены?","Вы действительно хотите снять шифрование с токена?",QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes) {
+
+        }
     }
 }
 
