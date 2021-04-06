@@ -47,10 +47,16 @@ bool DialogSettings::createPassword()
     DialogCreatePassword dlgCreatePswd(settingsHandler->getVkToken().toUtf8(), this);
     if (dlgCreatePswd.exec()==QDialog::Accepted) {
         settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
-        settingsHandler->setEncrypted(true);
         return true;
     }
     return false;
+}
+
+inline void DialogSettings::setEncryptedFlag(bool checked)
+{
+    settingsHandler->setEncrypted(checked);
+    ui->chbUseKeyCry->setChecked(checked);
+    ui->btEditKey->setEnabled(checked);
 }
 
 void DialogSettings::on_buttonBoxAct_accepted()
@@ -65,17 +71,19 @@ void DialogSettings::on_buttonBoxAct_accepted()
 void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
 {
     if (checked) {
-        createPassword();
+        setEncryptedFlag(createPassword());
     } else {
         if (QMessageBox::question(this,"Вы уверены?","Вы действительно хотите снять шифрование с токена?",QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes) {
             DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
             dlgPswd.exec();
             if (dlgPswd.isSuccessful()) {
                 settingsHandler->setVkToken(dlgPswd.getDecryptedData());
-                settingsHandler->setEncrypted(false);
+                setEncryptedFlag(false);
             } else {
-                ui->chbUseKeyCry->setChecked(true);
+                setEncryptedFlag(true);
             }
+        } else {
+            setEncryptedFlag(true);
         }
     }
 }
@@ -88,7 +96,20 @@ void DialogSettings::on_btEditKey_clicked()
         DialogCreatePassword dlgCreatePswd(dlgPswd.getDecryptedData(), this);
         if (dlgCreatePswd.exec()==QDialog::Accepted) {
             settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
-            settingsHandler->setEncrypted(true);
+        }
+    }
+}
+
+void DialogSettings::on_btEditToken_clicked()
+{
+    if (settingsHandler->isEncrypted()) {
+        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+        dlgPswd.exec();
+        if (dlgPswd.isSuccessful()) {
+            DialogCreatePassword dlgCreatePswd(dlgPswd.getDecryptedData(), this);
+            if (dlgCreatePswd.exec()==QDialog::Accepted) {
+                settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Dialogs/dialogedittoken.cpp \
     aesfacade.cpp \
     afterauthstrategy.cpp \
     dialogaddchat.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
     widgets/chatactionbutton.cpp
 
 HEADERS += \
+    Dialogs/dialogedittoken.h \
     aesfacade.h \
     afterauthstrategy.h \
     dialogaddchat.h \
@@ -61,6 +63,7 @@ HEADERS += \
     widgets/chatactionbutton.h
 
 FORMS += \
+    Dialogs/dialogedittoken.ui \
     dialogaddchat.ui \
     dialogchatslist.ui \
     dialogcreatepassword.ui \

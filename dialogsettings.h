@@ -39,11 +39,15 @@ private slots:
 
     void on_btEditKey_clicked();
 
+    void on_btEditToken_clicked();
+
 private:
     Ui::DialogSettings *ui;
     Settings *settingsHandler;
 
     bool createPassword();
+
+    inline void setEncryptedFlag(bool checked);
 };
 
 #endif // DIALOGSETTINGS_H
