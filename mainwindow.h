@@ -43,6 +43,7 @@ private slots:
 
 public slots:
     void VkApiRequestFinished(QJsonDocument r);
+    void onSettingsUpdated();
 
 private:
     Ui::MainWindow *ui;

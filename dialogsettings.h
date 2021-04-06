@@ -24,6 +24,9 @@ public:
     explicit DialogSettings(QWidget *parent = nullptr);
     ~DialogSettings();
 
+signals:
+    void saved();
+
 private slots:
 
     void on_btEditChatsList_clicked();
@@ -31,6 +34,8 @@ private slots:
     void on_btShowToken_clicked();
 
     void on_chbUseKeyCry_stateChanged(int arg1);
+
+    void on_buttonBoxAct_accepted();
 
 private:
     Ui::DialogSettings *ui;

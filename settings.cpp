@@ -36,7 +36,13 @@ void Settings::save()
             xml.writeEndElement(); // VK_TOKEN_TAG
 
             xml.writeStartElement(CHATS_WRAPPER_TAG);
-
+                for (auto i=2; i<=5; i++) {
+                    xml.writeStartElement(CHAT_TAG);
+                    xml.writeAttribute(NAME_ATTR, m_floors[i].getTitle());
+                    xml.writeAttribute(ID_ATTR, QString::number(m_floors[i].getId()));
+                    xml.writeAttribute(FLOOR_ATTR, QString::number(i));
+                    xml.writeEndElement(); // CHAT_TAG
+                }
             xml.writeEndElement(); // CHATS_WRAPPER_TAG
         xml.writeEndElement(); // SEQURE_WRAPPER_TAG
     xml.writeEndElement(); // CONFIG_WRAPPER_TAG

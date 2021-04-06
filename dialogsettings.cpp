@@ -75,3 +75,12 @@ void DialogSettings::createPassword()
 
     }
 }
+
+void DialogSettings::on_buttonBoxAct_accepted()
+{
+    settingsHandler->setEncrypted(ui->chbUseKeyCry->isChecked());
+    settingsHandler->setHsymbols(ui->leHSymbols->text());
+    settingsHandler->setSignature(ui->leSignature->text());
+    settingsHandler->save();
+    emit saved();
+}

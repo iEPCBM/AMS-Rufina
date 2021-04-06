@@ -38,6 +38,7 @@ QCheckBox* MainWindow::getFloorChk(int floor)
 void MainWindow::on_actionSettings_triggered()
 {
     DialogSettings dSettings(this);
+    connect(&dSettings, SIGNAL(saved()), this, SLOT(onSettingsUpdated()));
     dSettings.exec();
 }
 
@@ -102,4 +103,9 @@ void MainWindow::VkApiRequestFinished(QJsonDocument r)
 {
     qDebug()<<"F!";
     qDebug()<<r.toJson();
+}
+
+void MainWindow::onSettingsUpdated()
+{
+    updateMsgPreview();
 }
