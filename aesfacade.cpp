@@ -75,3 +75,8 @@ QString AESFacade::getStrErr() const
 {
     return m_strErr;
 }
+
+void AESFacade::clear()
+{
+    //TODO: clear algorythm
+}

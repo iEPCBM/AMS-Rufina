@@ -33,6 +33,8 @@ public:
 
     QString getStrErr() const;
 
+    void clear();
+
 private:
     QByteArray getIV();
     AES *m_aes;

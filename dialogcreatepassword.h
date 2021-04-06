@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QPushButton>
+#include "aesfacade.h"
+
 namespace Ui {
 class DialogCreatePassword;
 }
@@ -12,10 +14,10 @@ class DialogCreatePassword : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogCreatePassword(QWidget *parent = nullptr);
+    explicit DialogCreatePassword(QByteArray data, QWidget *parent = nullptr);
     ~DialogCreatePassword();
 
-    QString getPassword() const;
+    QByteArray endcryptedData() const;
 
 private slots:
     void on_lePasswordConfirm_textEdited(const QString &arg1);
@@ -28,7 +30,8 @@ private:
     Ui::DialogCreatePassword *ui;
     inline bool checkPassword();
 
-    QString m_strPassword;
+    AESFacade m_aes;
+    QByteArray m_endcryptedData;
 };
 
 #endif // DIALOGCREATEPASSWORD_H

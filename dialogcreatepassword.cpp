@@ -1,9 +1,10 @@
 #include "dialogcreatepassword.h"
 #include "ui_dialogcreatepassword.h"
 
-DialogCreatePassword::DialogCreatePassword(QWidget *parent) :
+DialogCreatePassword::DialogCreatePassword(QByteArray data, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogCreatePassword)
+    ui(new Ui::DialogCreatePassword),
+    m_aes(data)
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
@@ -29,16 +30,16 @@ void DialogCreatePassword::on_lePassword_textEdited(const QString &arg1)
 
 bool DialogCreatePassword::checkPassword()
 {
-    if (ui->lePassword->text()!=ui->lePasswordConfirm->text()) return false;
+    if (ui->lePassword->text()!=ui->lePasswordConfirm->text()||ui->lePassword->text().isEmpty()) return false;
     return true;
 }
 
-QString DialogCreatePassword::getPassword() const
+QByteArray DialogCreatePassword::endcryptedData() const
 {
-    return m_strPassword;
+    return m_endcryptedData;
 }
 
 void DialogCreatePassword::on_buttonBox_accepted()
 {
-    m_strPassword = ui->lePassword->text();
+    m_endcryptedData = m_aes.encryption(ui->lePassword->text());
 }

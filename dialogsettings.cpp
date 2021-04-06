@@ -28,54 +28,29 @@ void DialogSettings::on_btEditChatsList_clicked()
 
 void DialogSettings::on_btShowToken_clicked()
 {
+    DialogToken dlgToken(this);
     if (settingsHandler->isEncrypted()) {
-        DialogPasswordEnter *dlgPswd = new DialogPasswordEnter(this);
-        dlgPswd->exec();
-        delete dlgPswd;
-        dlgPswd = NULL;
+        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+        dlgPswd.exec();
+        if (dlgPswd.isSuccessful()) {
+            dlgToken.setToken(dlgPswd.getDecryptedData());
+            dlgToken.exec();
+        }
     } else {
-        DialogToken dlgToken(this);
         dlgToken.setToken(settingsHandler->getVkToken());
         dlgToken.exec();
     }
 }
 
-void DialogSettings::on_chbUseKeyCry_stateChanged(int arg1)
+bool DialogSettings::createPassword()
 {
-    if (arg1) {
-        createPassword();
-    } else {
-        if (QMessageBox::question(this,"Вы уверены?","Вы действительно хотите снять шифрование с токена?",QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes) {
-
-        }
+    DialogCreatePassword dlgCreatePswd(settingsHandler->getVkToken().toUtf8(), this);
+    if (dlgCreatePswd.exec()==QDialog::Accepted) {
+        settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
+        settingsHandler->setEncrypted(true);
+        return true;
     }
-}
-
-void DialogSettings::createPassword()
-{
-    DialogCreatePassword dlgCreatePswd(this);
-    dlgCreatePswd.exec();
-    if (dlgCreatePswd.result()==QDialog::Accepted) {
-        ui->btEditKey->setEnabled(true);
-        AESFacade aes(settingsHandler->getVkToken().toUtf8());
-        QByteArray data = aes.encryption(dlgCreatePswd.getPassword());
-        QString str64Data = QTextCodec::codecForMib(106)->toUnicode(data.toBase64());
-        qDebug()<<data;
-        qDebug()<<str64Data;
-
-        //Test decryption
-        qDebug()<<"Test decryption";
-        AESFacade aes2(data);
-        if (!aes2.decryption(dlgCreatePswd.getPassword())) {
-            qDebug()<<aes2.getStrErr();
-        } else {
-            data = aes2.getDecryptedData();
-            QString str64Data = QTextCodec::codecForMib(106)->toUnicode(data);
-            qDebug()<<data;
-            qDebug()<<str64Data;
-        }
-
-    }
+    return false;
 }
 
 void DialogSettings::on_buttonBoxAct_accepted()
@@ -85,4 +60,35 @@ void DialogSettings::on_buttonBoxAct_accepted()
     settingsHandler->setSignature(ui->leSignature->text());
     settingsHandler->save();
     emit saved();
+}
+
+void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
+{
+    if (checked) {
+        createPassword();
+    } else {
+        if (QMessageBox::question(this,"Вы уверены?","Вы действительно хотите снять шифрование с токена?",QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes) {
+            DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+            dlgPswd.exec();
+            if (dlgPswd.isSuccessful()) {
+                settingsHandler->setVkToken(dlgPswd.getDecryptedData());
+                settingsHandler->setEncrypted(false);
+            } else {
+                ui->chbUseKeyCry->setChecked(true);
+            }
+        }
+    }
+}
+
+void DialogSettings::on_btEditKey_clicked()
+{
+    DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+    dlgPswd.exec();
+    if (dlgPswd.isSuccessful()) {
+        DialogCreatePassword dlgCreatePswd(dlgPswd.getDecryptedData(), this);
+        if (dlgCreatePswd.exec()==QDialog::Accepted) {
+            settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
+            settingsHandler->setEncrypted(true);
+        }
+    }
 }

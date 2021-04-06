@@ -33,15 +33,17 @@ private slots:
 
     void on_btShowToken_clicked();
 
-    void on_chbUseKeyCry_stateChanged(int arg1);
-
     void on_buttonBoxAct_accepted();
+
+    void on_chbUseKeyCry_clicked(bool checked);
+
+    void on_btEditKey_clicked();
 
 private:
     Ui::DialogSettings *ui;
     Settings *settingsHandler;
 
-    void createPassword();
+    bool createPassword();
 };
 
 #endif // DIALOGSETTINGS_H
