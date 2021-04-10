@@ -6,15 +6,107 @@ Settings::Settings(QString strPath)
     m_strPath = strPath;
 }
 
-void Settings::save()
+void Settings::exportConf(QString strPath)
 {
-    QFile file(m_strPath);
-    if (!file.open(QIODevice::WriteOnly)) {
+    QFile *file = new QFile(strPath);
+    if (!file->open(QIODevice::WriteOnly)) {
         qDebug()<<"err_parse";
         return;
     }
-    QXmlStreamWriter xml(&file);
-    QXmlStreamAttributes attributes;
+    writeConf(file);
+    file->close();
+}
+
+void Settings::importConf(QString strPath)
+{
+    QFile *file = new QFile(strPath);
+    if (!file->open(QIODevice::ReadOnly)) {
+        qDebug()<<"err_parse";
+        return;
+    }
+    readConf(file);
+    file->close();
+}
+
+void Settings::save()
+{
+    exportConf(m_strPath);
+}
+
+void Settings::extract()
+{
+    QFile *file = new QFile(m_strPath);
+    if (!file->open(QIODevice::ReadOnly)) {
+        qDebug()<<"err_parse";
+        return;
+    }
+    readConf(file);
+    file->close();
+}
+
+Settings* Settings::getInstance()
+{
+    Settings* ptr_stg = new Settings("D:\\Projects\\Programs\\CPP\\QT\\VK_ChatsMessageDelivery\\RUFINA\\RUFINA\\assets\\config.xml");
+    ptr_stg->extract();
+    return ptr_stg;
+}
+
+QString Settings::getHsymbols() const
+{
+    return m_hsymbols;
+}
+
+void Settings::setHsymbols(const QString &hsymbols)
+{
+    m_hsymbols = hsymbols;
+}
+
+QString Settings::getSignature() const
+{
+    return m_signature;
+}
+
+void Settings::setSignature(const QString &signature)
+{
+    m_signature = signature;
+}
+
+bool Settings::isEncrypted() const
+{
+    return m_isEncrypted;
+}
+
+void Settings::setEncrypted(bool isEncrypted)
+{
+    m_isEncrypted = isEncrypted;
+}
+
+QString Settings::getTokenSignature() const
+{
+    return m_tokenSignature;
+}
+
+void Settings::setTokenSignature(const QString &tokenSignature)
+{
+    m_tokenSignature = tokenSignature;
+}
+
+QString Settings::getVkToken() const
+{
+    return m_vkToken;
+}
+
+void Settings::setVkToken(const QString &vkToken)
+{
+    m_vkToken = vkToken;
+}
+
+bool Settings::writeConf(QFile *file)
+{
+    QXmlStreamWriter xml(file);
+    if (xml.hasError()) {
+        return false;
+    }
     xml.setAutoFormatting(true);
     xml.writeStartDocument();
     xml.writeStartElement(CONFIG_WRAPPER_TAG);
@@ -38,8 +130,8 @@ void Settings::save()
             xml.writeStartElement(CHATS_WRAPPER_TAG);
                 for (auto i=2; i<=5; i++) {
                     xml.writeStartElement(CHAT_TAG);
-                    xml.writeAttribute(NAME_ATTR, m_floors[i].getTitle());
-                    xml.writeAttribute(ID_ATTR, QString::number(m_floors[i].getId()));
+                    xml.writeAttribute(NAME_ATTR, m_chats[i].getTitle());
+                    xml.writeAttribute(ID_ATTR, QString::number(m_chats[i].getId()));
                     xml.writeAttribute(FLOOR_ATTR, QString::number(i));
                     xml.writeEndElement(); // CHAT_TAG
                 }
@@ -47,20 +139,16 @@ void Settings::save()
         xml.writeEndElement(); // SEQURE_WRAPPER_TAG
     xml.writeEndElement(); // CONFIG_WRAPPER_TAG
     xml.writeEndDocument();
-    file.close();
+    return true;
 }
 
-void Settings::extract()
+bool Settings::readConf(QFile *file)
 {
-    QFile file(m_strPath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qDebug()<<"err_parse";
-        return;
-    }
-    QXmlStreamReader xml(&file);
+    QXmlStreamReader xml(file);
     QXmlStreamAttributes attributes;
     if (xml.hasError()) {
         qDebug()<<xml.errorString();
+        return false;
     }
 
     while (!xml.atEnd() && !xml.hasError()) {
@@ -134,10 +222,10 @@ void Settings::extract()
                                         } else {
                                             floorN = 0;
                                         }
-                                        if (m_floors.contains(floorN)) {
+                                        if (m_chats.contains(floorN)) {
                                             //TODO: Warning box
                                         }
-                                        m_floors[floorN]=chat;
+                                        m_chats[floorN]=chat;
                                         qDebug()<<floorN<<" "<<chat.getTitle();
                                     }
                                 }
@@ -152,62 +240,10 @@ void Settings::extract()
             }
         }
     }
-    file.close();
+    return true;
 }
 
-Settings* Settings::getInstance()
+QHash<uint8_t, VkChat> Settings::getChats() const
 {
-    Settings* ptr_stg = new Settings("D:\\Projects\\Programs\\CPP\\QT\\VK_ChatsMessageDelivery\\RUFINA\\RUFINA\\assets\\config.xml");
-    ptr_stg->extract();
-    return ptr_stg;
-}
-
-QString Settings::getHsymbols() const
-{
-    return m_hsymbols;
-}
-
-void Settings::setHsymbols(const QString &hsymbols)
-{
-    m_hsymbols = hsymbols;
-}
-
-QString Settings::getSignature() const
-{
-    return m_signature;
-}
-
-void Settings::setSignature(const QString &signature)
-{
-    m_signature = signature;
-}
-
-bool Settings::isEncrypted() const
-{
-    return m_isEncrypted;
-}
-
-void Settings::setEncrypted(bool isEncrypted)
-{
-    m_isEncrypted = isEncrypted;
-}
-
-QString Settings::getTokenSignature() const
-{
-    return m_tokenSignature;
-}
-
-void Settings::setTokenSignature(const QString &tokenSignature)
-{
-    m_tokenSignature = tokenSignature;
-}
-
-QString Settings::getVkToken() const
-{
-    return m_vkToken;
-}
-
-void Settings::setVkToken(const QString &vkToken)
-{
-    m_vkToken = vkToken;
+    return m_chats;
 }

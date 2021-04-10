@@ -33,6 +33,7 @@ private slots:
 private:
     Ui::DialogPasswordEnter *ui;
     QByteArray m_encryptedData;
+    QString m_pswd;
     AESFacade m_aes;
     QByteArray m_decryptedData;
     bool m_isSuccessful = false;

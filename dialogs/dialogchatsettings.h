@@ -16,9 +16,16 @@ public:
     explicit DialogChatSettings(VkChat *chat, QWidget *parent = nullptr);
     ~DialogChatSettings();
 
+    uint8_t floor() const;
+
+    VkChat *chat() const;
+
+private slots:
+    void on_buttonBox_accepted();
+
 private:
     Ui::DialogChatSettings *ui;
     VkChat *m_chat;
+    uint8_t m_floor;
 };
-
 #endif // DIALOGCHATSETTINGS_H

@@ -15,15 +15,21 @@ DialogPasswordEnter::~DialogPasswordEnter()
     delete ui;
 }
 
+QString DialogPasswordEnter::getPassword()
+{
+    return m_pswd;
+}
+
 void DialogPasswordEnter::on_buttonBox_accepted()
 {
-    if (m_aes.decryption(ui->lePswd->text())) {
+    m_pswd = ui->lePswd->text();
+    if (m_aes.decryption(m_pswd)) {
         m_decryptedData = m_aes.getDecryptedData();
         m_isSuccessful = true;
         this->close();
     } else {
         QMessageBox::StandardButton bt =
-                QMessageBox::critical(this, "Ошибка", "Неправильный пароль!", QMessageBox::Retry|QMessageBox::Ok);
+                QMessageBox::critical(this, "Ошибка", "Неправильный пароль!", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Retry);
         if (bt == QMessageBox::Ok) {
             this->close();
         } else {

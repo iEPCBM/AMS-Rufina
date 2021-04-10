@@ -60,7 +60,8 @@ HEADERS += \
     vkApi/vkuser.h \
     vkApi/vkuserhandler.h \
     vkApi/vkchathandler.h \
-    widgets/chatactionbutton.h
+    widgets/chatactionbutton.h \
+    rassert.h
 
 FORMS += \
     Dialogs/dialogedittoken.ui \

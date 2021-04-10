@@ -35,6 +35,9 @@ void DialogAddChat::onAddChat(VkChat *chat)
         } else return;
     }
     dlgChatStg.exec();
+    qDebug()<<chat->getTitle();
+    qDebug()<<dlgChatStg.floor();
+
 }
 
 
@@ -83,7 +86,7 @@ void DialogAddChat::findChats()
 
 void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admins, uint32_t actionId)
 {
-    ui->tableChats->insertRow ( ui->tableChats->rowCount() );
+    ui->tableChats->insertRow (ui->tableChats->rowCount());
     int lastRow = ui->tableChats->rowCount()-1;
     ui->tableChats->setItem
             (lastRow,

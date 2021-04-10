@@ -9,10 +9,7 @@ DialogSettings::DialogSettings(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     settingsHandler = Settings::getInstance();
-    ui->leHSymbols->setText(settingsHandler->getHsymbols());
-    ui->leSignature->setText(settingsHandler->getSignature());
-    ui->chbUseKeyCry->setChecked(settingsHandler->isEncrypted());
-    ui->btEditKey->setEnabled(settingsHandler->isEncrypted());
+    update();
 }
 
 DialogSettings::~DialogSettings()
@@ -20,9 +17,17 @@ DialogSettings::~DialogSettings()
     delete ui;
 }
 
+void DialogSettings::update()
+{
+    ui->leHSymbols->setText(settingsHandler->getHsymbols());
+    ui->leSignature->setText(settingsHandler->getSignature());
+    ui->chbUseKeyCry->setChecked(settingsHandler->isEncrypted());
+    ui->btEditKey->setEnabled(settingsHandler->isEncrypted());
+}
+
 void DialogSettings::on_btEditChatsList_clicked()
 {
-    DialogChatsList d_chats(this);
+    DialogChatsList d_chats(settingsHandler->getChats(), this);
     d_chats.exec();
 }
 
@@ -102,14 +107,37 @@ void DialogSettings::on_btEditKey_clicked()
 
 void DialogSettings::on_btEditToken_clicked()
 {
+    QString token = "";
     if (settingsHandler->isEncrypted()) {
         DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
         dlgPswd.exec();
         if (dlgPswd.isSuccessful()) {
-            DialogCreatePassword dlgCreatePswd(dlgPswd.getDecryptedData(), this);
-            if (dlgCreatePswd.exec()==QDialog::Accepted) {
-                settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
-            }
+            token = QString::fromUtf8(dlgPswd.getDecryptedData());
+            DialogEditToken dlgEdToken(token, this);
+            dlgEdToken.exec();
+            AESFacade aes(dlgEdToken.token().toUtf8());
+            QByteArray encryData = aes.encryption(dlgPswd.getPassword());
+            settingsHandler->setVkToken(QString::fromUtf8(encryData.toBase64()));
+        } else {
+            return;
         }
+    } else {
+        token = settingsHandler->getVkToken();
+        DialogEditToken dlgEdToken(token, this);
+        dlgEdToken.exec();
+        settingsHandler->setVkToken(dlgEdToken.token());
     }
+}
+
+void DialogSettings::on_btExportSettings_clicked()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, "Экспорт настроек", QDir::homePath(), "Файл настроек (*.xml);;Все файлы (*.*)");
+    settingsHandler->exportConf(filePath);
+}
+
+void DialogSettings::on_btImportSettings_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, "Импорт настроек", QDir::homePath(), "Файл настроек (*.xml);;Все файлы (*.*)");
+    settingsHandler->importConf(filePath);
+    update();
 }

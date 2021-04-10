@@ -33,7 +33,6 @@ public:
     void save();
 
     void extract();
-    void update();
 
     static Settings* getInstance();
 
@@ -52,16 +51,21 @@ public:
     QString getVkToken() const;
     void setVkToken(const QString &vkToken);
 
+    QHash<uint8_t, VkChat> getChats() const;
+
 private:
     QString m_strPath;
     QXmlStreamReader m_xmlStream;
     QString m_hsymbols;
     QString m_signature;
 
+    bool writeConf(QFile *file);
+    bool readConf(QFile *file);
+
     QString m_tokenSignature;
     QString m_vkToken;
     bool m_isEncrypted;
-    QHash<uint8_t, VkChat> m_floors; // n floor - Chat table
+    QHash<uint8_t, VkChat> m_chats; // n floor - Chat table
 };
 
 #endif // SETTINGS_H
