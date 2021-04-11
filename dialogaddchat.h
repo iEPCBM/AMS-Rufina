@@ -48,10 +48,11 @@ private:
     void addActionButtonsToRow(int row);
     void startSearching();
     void stopSearching();
+
     bool hasSavedChat(VkChat chat);
     bool hasSavedChat(uint id);
-
     bool hasFloorConflict(uint8_t floor);
+
     QList<uint32_t> filterUserIds(QList<int> usrIds);
     inline bool isUserId(int id);
 

@@ -1,9 +1,8 @@
 #include "chatactionbutton.h"
 
-ChatActionButton::ChatActionButton(QString text, VkChat chat, uint row, QWidget *parent):QPushButton(text, parent)
+ChatActionButton::ChatActionButton(QString text, VkChat chat, QWidget *parent):QPushButton(text, parent)
 {
     m_chat = chat;
-    m_row = row;
     connect(this, SIGNAL(clicked()), this, SLOT(doChatAction()));
 }
 
@@ -25,6 +24,17 @@ void ChatActionButton::setChat(VkChat chat)
 void ChatActionButton::doChatAction()
 {
     emit cabtClicked(m_row, m_chat);
+    emit cabtClickedFloor(m_floor, m_chat);
+}
+
+uint8_t ChatActionButton::floor() const
+{
+    return m_floor;
+}
+
+void ChatActionButton::setFloor(const uint8_t &floor)
+{
+    m_floor = floor;
 }
 
 void ChatActionButton::setRow(const uint &row)

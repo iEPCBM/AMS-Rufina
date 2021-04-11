@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "dialogaddchat.h"
+#include "dialogs/dialogchatsettings.h"
 #include "vkApi/vkchat.h"
 #include <QHash>
 
@@ -23,11 +24,15 @@ public:
 
 private slots:
     void on_btnAddChat_clicked();
-    void onEditChat(uint row, VkChat chat);
-    void onDeleteChat(uint row, VkChat chat);
+    void onEditChat(uint8_t floor, VkChat chat);
+    void onDeleteChat(uint8_t floor, VkChat chat);
 
 private:
     Ui::DialogChatsList *ui;
+    QHash<uint8_t, VkChat> m_chats;
+
+    void updateChatsTable();
+    void updateChatsTableRow(uint row, uint8_t floor, VkChat chat);
 };
 
 #endif // DIALOGCHATSLIST_H

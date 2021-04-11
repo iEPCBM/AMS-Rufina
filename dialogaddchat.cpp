@@ -148,7 +148,8 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
              lbAdmins);
 
 
-    ChatActionButton *btAddChat = new ChatActionButton("Добавить", m_listDetectedChats[actionId], lastRow, ui->tableChats);
+    ChatActionButton *btAddChat = new ChatActionButton("Добавить", m_listDetectedChats[actionId], ui->tableChats);
+    btAddChat->setRow(lastRow);
     QWidget *widgetWrapper = new QWidget();
     QVBoxLayout *layoutBt = new QVBoxLayout(widgetWrapper);
     QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);

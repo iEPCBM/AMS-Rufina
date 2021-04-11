@@ -84,3 +84,11 @@ bool VkChat::hasTitle()
     return !m_strTitle.isEmpty();
 }
 
+bool VkChat::operator==(const VkChat &a)
+{
+    if (m_id==a.getId()) {
+        return true;
+    }
+    return false;
+}
+

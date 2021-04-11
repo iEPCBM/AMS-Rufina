@@ -37,6 +37,8 @@ public:
     bool hasOwner();
     bool hasAdmins();
     bool hasTitle();
+
+    bool operator== (const VkChat &a);
 private:
     QString m_strTitle;
     QList<int> m_administratorsIds;
@@ -44,4 +46,10 @@ private:
     unsigned int m_id;
 };
 
+static bool operator== (const VkChat &a, const VkChat &b) {
+    if (a.getId()==b.getId()) {
+        return true;
+    }
+    return false;
+}
 #endif // VKCHAT_H

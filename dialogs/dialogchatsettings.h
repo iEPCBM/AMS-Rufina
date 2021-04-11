@@ -16,12 +16,13 @@ class DialogChatSettings : public QDialog
 
 public:
     explicit DialogChatSettings(VkChat chat, QWidget *parent = nullptr);
+    explicit DialogChatSettings(uint8_t floor, VkChat chat, QWidget *parent = nullptr);
     ~DialogChatSettings();
 
     uint8_t floor() const;
 
     VkChat chat() const;
-    void accept(){}
+    void accept();
 
 private slots:
     void on_buttonBox_accepted();
