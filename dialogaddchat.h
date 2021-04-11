@@ -48,7 +48,6 @@ private:
     void addActionButtonsToRow(int row);
     void startSearching();
     void stopSearching();
-    void addChat(VkChat *chat);
     bool hasSavedChat(VkChat chat);
     bool hasSavedChat(uint id);
 
