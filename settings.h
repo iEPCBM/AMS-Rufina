@@ -52,6 +52,7 @@ public:
     void setVkToken(const QString &vkToken);
 
     QHash<uint8_t, VkChat> getChats() const;
+    void setChats(const QHash<uint8_t, VkChat> &chats);
 
 private:
     QString m_strPath;

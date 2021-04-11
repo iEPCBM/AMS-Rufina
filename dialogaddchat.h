@@ -50,9 +50,13 @@ private:
     void stopSearching();
     void addChat(VkChat *chat);
     bool hasSavedChat(VkChat chat);
+    bool hasSavedChat(uint id);
+
     bool hasFloorConflict(uint8_t floor);
     QList<uint32_t> filterUserIds(QList<int> usrIds);
     inline bool isUserId(int id);
+
+    void setChatAddedState(uint row, bool state);
     //VkChatHandler m_chatHandler;
     QHash<uint8_t, VkChat> m_savedChats; //floor - VkChat
     QList<VkChat> m_listDetectedChats;

@@ -20,8 +20,13 @@ DialogChatSettings::~DialogChatSettings()
 
 void DialogChatSettings::on_buttonBox_accepted()
 {
+    if (ui->leChatTitle->text().isEmpty()) {
+       QMessageBox::critical(this, "Название беседы пустое", "Название беседы не может быть пустым. Введите название в соответствующее поле.");
+       return;
+    }
     m_chat.setTitle(ui->leChatTitle->text());
     m_floor = static_cast<uint8_t>(ui->spinFloor->value());
+    this->close();
 }
 
 VkChat DialogChatSettings::chat() const

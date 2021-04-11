@@ -38,23 +38,22 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
     }
     dlgChatStg.exec();
 
-    qDebug()<<chat.getTitle();
-    qDebug()<<dlgChatStg.floor();
+    chat = dlgChatStg.chat();
+    uint8_t floor = dlgChatStg.floor();
     //addChatToTable();
-    if (hasFloorConflict(dlgChatStg.floor())) {
+    if (hasFloorConflict(floor)) {
         QMessageBox::StandardButtons btClicked = QMessageBox::question(this, "Заменить беседу?",
-                             "Беседа для " + QString::number(dlgChatStg.floor())+ " этажа уже существует. Заменить беседу \"" +
-                                                                      m_savedChats[dlgChatStg.floor()].getTitle() + "\" на \"" +
+                             "Беседа для " + QString::number(floor)+ " этажа уже существует. Заменить беседу \"" +
+                                                                      m_savedChats[floor].getTitle() + "\" на беседу \"" +
                                                                       chat.getTitle() + "\"?");
         if (btClicked==QMessageBox::No) {
             return;
         }
+        setChatAddedState(findRowByChatId(m_savedChats[floor].getId()), false);
     }
-    updateChatTitleInRow(row, dlgChatStg.chat().getTitle());
-    m_savedChats[dlgChatStg.floor()]=chat;
-    ui->tableChats->cellWidget(row, 3)->setEnabled(false);
-    ui->tableChats->item(row, 4)->setText("Добавлено");
-    ui->tableChats->resizeColumnsToContents();
+    updateChatTitleInRow(row, chat.getTitle());
+    m_savedChats[floor]=chat;
+    setChatAddedState(row, true);
 }
 
 
@@ -71,32 +70,38 @@ void DialogAddChat::findChats()
 {
     uint32_t id=1;
     while (m_isSearching) {
-        VkChatHandler chatHandler(this, "");
-        VkUserHandler usrHandler(this, "");
-        connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
-        chatHandler.getConversationData(id);
-        VkChat chat = chatHandler.getChat();
-        QList<VkUser> admins;
-        if (!chat.getAdministratorsIds().isEmpty()) {
-            usrHandler.sendRequest(
-                    filterUserIds(chat.getAdministratorsIds()));
-            admins = usrHandler.getUsers();
-        }
-        usrHandler.clear();
-        VkUser owner;
-        if (chat.hasOwner()) {
-            usrHandler.sendRequest(chat.getOwnerId());
-            owner = usrHandler.getUsers().at(0);
-        }
+        if (!hasSavedChat(id)) {
+            VkChatHandler chatHandler(this, "");
+            VkUserHandler usrHandler(this, "");
+            connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
+            chatHandler.getConversationData(id);
+            VkChat chat = chatHandler.getChat();
+            QList<VkUser> admins;
+            if (!chat.getAdministratorsIds().isEmpty()) {
+                usrHandler.sendRequest(
+                        filterUserIds(chat.getAdministratorsIds()));
+                admins = usrHandler.getUsers();
+            }
+            usrHandler.clear();
+            VkUser owner;
+            if (chat.hasOwner()) {
+                usrHandler.sendRequest(chat.getOwnerId());
+                owner = usrHandler.getUsers().at(0);
+            }
 
-        if (chatHandler.hasError()) {
-            stopSearching();
-            break;
+            if (chatHandler.hasError()) {
+                stopSearching();
+                break;
+            }
+
+            m_listDetectedChats.append(chat);
+            addChatToTable(chatHandler.getChat(), owner, admins, m_listDetectedChats.length()-1);
+            chatHandler.clear();
         }
         id++;
-        m_listDetectedChats.append(chat);
-        addChatToTable(chatHandler.getChat(), owner, admins, m_listDetectedChats.length()-1);
-        chatHandler.clear();
+    }
+    if (ui->tableChats->rowCount()==0) {
+
     }
 }
 
@@ -207,9 +212,14 @@ void DialogAddChat::stopSearching()
 
 bool DialogAddChat::hasSavedChat(VkChat chat)
 {
+    return hasSavedChat(chat.getId());
+}
+
+bool DialogAddChat::hasSavedChat(uint chatId)
+{
     QList<VkChat> chats = m_savedChats.values();
     foreach (VkChat s_chat, chats) {
-        if (s_chat.getId()==chat.getId()) {
+        if (s_chat.getId()==chatId) {
             return true;
         }
     }
@@ -238,6 +248,13 @@ inline bool DialogAddChat::isUserId(int id)
         return true;
     }
     return false;
+}
+
+void DialogAddChat::setChatAddedState(uint row, bool state)
+{
+    ui->tableChats->cellWidget(row, 3)->setEnabled(!state);
+    ui->tableChats->item(row, 4)->setText(state?"Добавлено":"");
+    ui->tableChats->resizeColumnsToContents();
 }
 
 QHash<uint8_t, VkChat> DialogAddChat::getAddedChats() const

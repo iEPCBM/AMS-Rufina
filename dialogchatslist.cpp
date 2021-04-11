@@ -55,5 +55,10 @@ void DialogChatsList::setChats(QHash<uint8_t, VkChat> chats)
 void DialogChatsList::on_btnAddChat_clicked()
 {
     DialogAddChat dlgAddChat(this);
-    dlgAddChat.exec();
+    dlgAddChat.setAddedChats(getChats());
+    int resultDlg = dlgAddChat.exec();
+    if (resultDlg == QDialog::Accepted) {
+        ui->tableChats->setRowCount(0);
+        setChats(dlgAddChat.getAddedChats());
+    }
 }

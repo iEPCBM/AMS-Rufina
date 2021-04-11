@@ -2,6 +2,8 @@
 #define DIALOGCHATSETTINGS_H
 
 #include <QDialog>
+#include <QMessageBox>
+
 #include "vkApi/vkchat.h"
 
 namespace Ui {
@@ -19,6 +21,7 @@ public:
     uint8_t floor() const;
 
     VkChat chat() const;
+    void accept(){}
 
 private slots:
     void on_buttonBox_accepted();

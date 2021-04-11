@@ -28,7 +28,10 @@ void DialogSettings::update()
 void DialogSettings::on_btEditChatsList_clicked()
 {
     DialogChatsList d_chats(settingsHandler->getChats(), this);
-    d_chats.exec();
+    int resultDlg = d_chats.exec();
+    if (resultDlg == QDialog::Accepted) {
+        settingsHandler->setChats(d_chats.getChats());
+    }
 }
 
 void DialogSettings::on_btShowToken_clicked()
