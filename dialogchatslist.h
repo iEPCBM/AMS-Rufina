@@ -23,6 +23,8 @@ public:
 
 private slots:
     void on_btnAddChat_clicked();
+    void onEditChat(uint row, VkChat chat);
+    void onDeleteChat(uint row, VkChat chat);
 
 private:
     Ui::DialogChatsList *ui;

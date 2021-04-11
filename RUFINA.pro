@@ -33,6 +33,7 @@ SOURCES += \
     vkApi/vkuser.cpp \
     vkApi/vkuserhandler.cpp \
     vkApi/vkchathandler.cpp \
+    vkchatsoperations.cpp \
     widgets/chatactionbutton.cpp
 
 HEADERS += \
@@ -60,6 +61,7 @@ HEADERS += \
     vkApi/vkuser.h \
     vkApi/vkuserhandler.h \
     vkApi/vkchathandler.h \
+    vkchatsoperations.h \
     widgets/chatactionbutton.h \
     rassert.h
 

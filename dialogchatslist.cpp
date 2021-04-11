@@ -49,6 +49,28 @@ void DialogChatsList::setChats(QHash<uint8_t, VkChat> chats)
                 (lastRow,
                  2,
                  new QTableWidgetItem(QString::number(floor)));
+
+        ChatActionButton *btEditChat = new ChatActionButton("Изменить", chat, lastRow, ui->tableChats);
+        ChatActionButton *btDeleteChat = new ChatActionButton("Удалить", chat, lastRow, ui->tableChats);
+        QWidget *widgetWrapper = new QWidget();
+        QHBoxLayout *layoutBt = new QHBoxLayout(widgetWrapper);
+        QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        QSpacerItem *vertSpacerFooter= new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        layoutBt->addItem(vertSpacerHeader);
+        layoutBt->addWidget(btEditChat);
+        layoutBt->addWidget(btDeleteChat);
+
+        layoutBt->addItem(vertSpacerFooter);
+        ui->tableChats->setCellWidget(
+                 lastRow,
+                 3,
+                 widgetWrapper);
+
+        connect(btEditChat, SIGNAL(cabtClicked(uint, VkChat)), this, SLOT(onEditChat(uint, VkChat)));
+        connect(btDeleteChat, SIGNAL(cabtClicked(uint, VkChat)), this, SLOT(onEditChat(uint, VkChat)));
+
+        ui->tableChats->resizeRowToContents(lastRow);
+        ui->tableChats->resizeColumnsToContents();
     }
 }
 
@@ -60,5 +82,13 @@ void DialogChatsList::on_btnAddChat_clicked()
     if (resultDlg == QDialog::Accepted) {
         ui->tableChats->setRowCount(0);
         setChats(dlgAddChat.getAddedChats());
+    }
+}
+
+void DialogChatsList::onDeleteChat(uint row, VkChat chat)
+{
+    QMessageBox::StandardButton btClicked = QMessageBox::question(this, "Удалить беседу?", "Вы действительно хотите удалить беседу \"" + chat.getTitle() + "\" из списка?");
+    if (btClicked == QMessageBox::Yes) {
+
     }
 }
