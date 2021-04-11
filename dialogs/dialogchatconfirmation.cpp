@@ -1,7 +1,7 @@
 #include "dialogchatconfirmation.h"
 #include "ui_dialogchatconfirmation.h"
 
-DialogChatConfirmation::DialogChatConfirmation(VkChat *chat, QString token, QWidget *parent) :
+DialogChatConfirmation::DialogChatConfirmation(VkChat chat, QString token, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogChatConfirmation),
     m_msgDelivery(token, this)
@@ -41,12 +41,12 @@ void DialogChatConfirmation::generateCode()
 {
     m_data2hash = QDate::currentDate().toString(Qt::ISODate)+" "
             +QTime::currentTime().toString(Qt::ISODateWithMs)
-            +QString::number(VK_API_MULTICHAT_BASE_ID+m_chat->getId())
+            +QString::number(VK_API_MULTICHAT_BASE_ID+m_chat.getId())
             +CRC_SALT;
     qDebug()<<m_data2hash;
     QByteArray crcHash = crc32b(m_data2hash.toUtf8()).toHex();
     qDebug()<<crcHash;
-    m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat->getId(), STR_CONFIRMATION_PREAMBLE+QString::fromUtf8(crcHash));
+    m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat.getId(), STR_CONFIRMATION_PREAMBLE+QString::fromUtf8(crcHash));
 }
 
 bool DialogChatConfirmation::isConfirmated() const

@@ -8,6 +8,7 @@ DialogAddChat::DialogAddChat(QWidget *parent) :
     ui->setupUi(this);
     m_settings = Settings::getInstance();
     qDebug()<<"Well";
+    ui->tableChats->resizeColumnsToContents();
 }
 
 DialogAddChat::~DialogAddChat()
@@ -21,9 +22,10 @@ void DialogAddChat::onChatGot(VkChat chat)
     //m_listChats.append(chat);
 }
 
-void DialogAddChat::onAddChat(VkChat *chat)
-{   DialogChatSettings dlgChatStg(chat, this);
-    if (!chat->hasTitle()||!chat->hasOwner()) {
+void DialogAddChat::onAddChat(uint row, VkChat chat)
+{
+    DialogChatSettings dlgChatStg(chat, this);
+    if (!chat.hasTitle()||!chat.hasOwner()) {
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
                              "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
@@ -35,9 +37,24 @@ void DialogAddChat::onAddChat(VkChat *chat)
         } else return;
     }
     dlgChatStg.exec();
-    qDebug()<<chat->getTitle();
-    qDebug()<<dlgChatStg.floor();
 
+    qDebug()<<chat.getTitle();
+    qDebug()<<dlgChatStg.floor();
+    //addChatToTable();
+    if (hasFloorConflict(dlgChatStg.floor())) {
+        QMessageBox::StandardButtons btClicked = QMessageBox::question(this, "Заменить беседу?",
+                             "Беседа для " + QString::number(dlgChatStg.floor())+ " этажа уже существует. Заменить беседу \"" +
+                                                                      m_savedChats[dlgChatStg.floor()].getTitle() + "\" на \"" +
+                                                                      chat.getTitle() + "\"?");
+        if (btClicked==QMessageBox::No) {
+            return;
+        }
+    }
+    updateChatTitleInRow(row, dlgChatStg.chat().getTitle());
+    m_savedChats[dlgChatStg.floor()]=chat;
+    ui->tableChats->cellWidget(row, 3)->setEnabled(false);
+    ui->tableChats->item(row, 4)->setText("Добавлено");
+    ui->tableChats->resizeColumnsToContents();
 }
 
 
@@ -48,7 +65,6 @@ void DialogAddChat::on_btStartStopFind_clicked()
     } else {
         stopSearching();
     }
-
 }
 
 void DialogAddChat::findChats()
@@ -78,8 +94,8 @@ void DialogAddChat::findChats()
             break;
         }
         id++;
-        m_listChats.append(chat);
-        addChatToTable(chatHandler.getChat(), owner, admins, m_listChats.length()-1);
+        m_listDetectedChats.append(chat);
+        addChatToTable(chatHandler.getChat(), owner, admins, m_listDetectedChats.length()-1);
         chatHandler.clear();
     }
 }
@@ -127,7 +143,7 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
              lbAdmins);
 
 
-    ChatActionButton *btAddChat = new ChatActionButton("Добавить", &m_listChats[actionId], ui->tableChats);
+    ChatActionButton *btAddChat = new ChatActionButton("Добавить", m_listDetectedChats[actionId], lastRow, ui->tableChats);
     QWidget *widgetWrapper = new QWidget();
     QVBoxLayout *layoutBt = new QVBoxLayout(widgetWrapper);
     QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -143,7 +159,12 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     ui->tableChats->resizeRowToContents(lastRow);
     ui->tableChats->resizeColumnsToContents();
 
-    connect(btAddChat, SIGNAL(cabtClicked(VkChat*)), this, SLOT(onAddChat(VkChat*)));
+    connect(btAddChat, SIGNAL(cabtClicked(uint, VkChat)), this, SLOT(onAddChat(uint, VkChat)));
+
+    ui->tableChats->setItem(
+             lastRow,
+             4,
+             new QTableWidgetItem(""));
 
     lbAdmins         = NULL;
     btAddChat        = NULL;
@@ -151,6 +172,21 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     layoutBt         = NULL;
     vertSpacerHeader = NULL;
     vertSpacerFooter = NULL;
+}
+
+int32_t DialogAddChat::findRowByChatId(uint chatId)
+{
+    for (auto i=0; i<ui->tableChats->rowCount(); i++) {
+        if (chatId==ui->tableChats->item(i, 0)->text().toUInt()) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void DialogAddChat::updateChatTitleInRow(int row, QString title)
+{
+    ui->tableChats->item(row, 1)->setText(title);
 }
 
 void DialogAddChat::startSearching()
@@ -167,6 +203,22 @@ void DialogAddChat::stopSearching()
     m_isSearching = false;
     ui->btStartStopFind->setText("Начать поиск");
     ui->progressBar->setMaximum(1);
+}
+
+bool DialogAddChat::hasSavedChat(VkChat chat)
+{
+    QList<VkChat> chats = m_savedChats.values();
+    foreach (VkChat s_chat, chats) {
+        if (s_chat.getId()==chat.getId()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DialogAddChat::hasFloorConflict(uint8_t floor)
+{
+    return m_savedChats.contains(floor); // &m_savedChats[floor].hasTitle()
 }
 
 QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)
@@ -186,4 +238,14 @@ inline bool DialogAddChat::isUserId(int id)
         return true;
     }
     return false;
+}
+
+QHash<uint8_t, VkChat> DialogAddChat::getAddedChats() const
+{
+    return m_savedChats;
+}
+
+void DialogAddChat::setAddedChats(const QHash<uint8_t, VkChat> &addedChats)
+{
+    m_savedChats = addedChats;
 }

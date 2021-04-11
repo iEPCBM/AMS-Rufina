@@ -22,7 +22,7 @@ class DialogChatConfirmation : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogChatConfirmation(VkChat *chat, QString token, QWidget *parent = nullptr);
+    explicit DialogChatConfirmation(VkChat chat, QString token, QWidget *parent = nullptr);
     ~DialogChatConfirmation();
 
     bool isConfirmated() const;
@@ -35,7 +35,7 @@ private slots:
 private:
     Ui::DialogChatConfirmation *ui;
     QByteArray crc32b(QByteArray message);
-    VkChat *m_chat;
+    VkChat m_chat;
     VkMessageDelivery m_msgDelivery;
     QString m_data2hash;
     void generateCode();

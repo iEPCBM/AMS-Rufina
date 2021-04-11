@@ -60,7 +60,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string>ID беседы</string>
+       <string>ID</string>
       </property>
      </column>
      <column>
@@ -76,6 +76,11 @@
      <column>
       <property name="text">
        <string>Действия</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Статус</string>
       </property>
      </column>
     </widget>
