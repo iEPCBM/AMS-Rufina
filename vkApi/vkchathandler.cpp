@@ -2,7 +2,7 @@
 
 VkChatHandler::VkChatHandler(QObject *parent, QString token) :
     QObject(parent),
-    api("***REMOVED***")
+    api(token)
 {
 }
 

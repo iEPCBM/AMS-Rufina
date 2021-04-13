@@ -27,7 +27,7 @@ void DialogSettings::update()
 
 void DialogSettings::on_btEditChatsList_clicked()
 {
-    DialogChatsList d_chats(settingsHandler->getChats(), this);
+    DialogChatsList d_chats(settingsHandler->getChats(), settingsHandler->getVkToken(), settingsHandler->isEncrypted(), this);
     int resultDlg = d_chats.exec();
     if (resultDlg == QDialog::Accepted) {
         settingsHandler->setChats(d_chats.getChats());

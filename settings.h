@@ -56,7 +56,6 @@ public:
 
 private:
     QString m_strPath;
-    QXmlStreamReader m_xmlStream;
     QString m_hsymbols;
     QString m_signature;
 

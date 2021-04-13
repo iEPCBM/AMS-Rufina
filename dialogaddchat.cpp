@@ -1,14 +1,20 @@
 #include "dialogaddchat.h"
 #include "ui_dialogaddchat.h"
 
-DialogAddChat::DialogAddChat(QWidget *parent) :
+DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogAddChat)
 {
     ui->setupUi(this);
-    m_settings = Settings::getInstance();
     qDebug()<<"Well";
     ui->tableChats->resizeColumnsToContents();
+
+    m_isEncryptedToken = isEncrypted;
+    if (m_isEncryptedToken) {
+        m_encryptedToken = token;
+    } else {
+        m_decryptedToken = token;
+    }
 }
 
 DialogAddChat::~DialogAddChat()
@@ -29,7 +35,10 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
                              "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
-            DialogChatConfirmation dlgConfirmation(chat, m_settings->getVkToken(), this);
+            if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
+
+            }
+            DialogChatConfirmation dlgConfirmation(chat, m_decryptedToken, this);
             dlgConfirmation.exec();
             if (!dlgConfirmation.isConfirmated()) {
                 return;
@@ -68,11 +77,17 @@ void DialogAddChat::on_btStartStopFind_clicked()
 
 void DialogAddChat::findChats()
 {
-    uint32_t id=1;
+    uint32_t id = 1;
+    decryptToken();
+    if (m_decryptedToken.isEmpty()) {
+        stopSearching();
+        return;
+    }
+
+    VkChatHandler chatHandler(this, m_decryptedToken);
+    VkUserHandler usrHandler(this, m_decryptedToken);
     while (m_isSearching) {
         if (!hasSavedChat(id)) {
-            VkChatHandler chatHandler(this, "");
-            VkUserHandler usrHandler(this, "");
             connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
             chatHandler.getConversationData(id);
             VkChat chat = chatHandler.getChat();
@@ -256,6 +271,19 @@ void DialogAddChat::setChatAddedState(uint row, bool state)
     ui->tableChats->cellWidget(row, 3)->setEnabled(!state);
     ui->tableChats->item(row, 4)->setText(state?"Добавлено":"");
     ui->tableChats->resizeColumnsToContents();
+}
+
+void DialogAddChat::decryptToken()
+{
+    if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
+        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_encryptedToken.toUtf8()), this);
+        int resultDlg = dlgPasswEnter.exec();
+        if (dlgPasswEnter.isSuccessful()) {
+            m_decryptedToken = QString::fromUtf8(dlgPasswEnter.getDecryptedData());
+        }
+    } else if (!m_isEncryptedToken) {
+        m_decryptedToken = m_encryptedToken;
+    }
 }
 
 QHash<uint8_t, VkChat> DialogAddChat::getAddedChats() const

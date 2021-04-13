@@ -2,7 +2,7 @@
 
 VkUserHandler::VkUserHandler(QObject *parent, QString token)
     : QObject(parent),
-      m_api("***REMOVED***")
+      m_api(token)
 {
     m_token = token;
 }

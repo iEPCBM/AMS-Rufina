@@ -16,11 +16,12 @@ class DialogChatsList : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogChatsList(QHash<uint8_t, VkChat> chats, QWidget *parent = nullptr);
+    explicit DialogChatsList(QHash<uint8_t, VkChat> chats, QString token = "", bool isEncrypted = false, QWidget *parent = nullptr);
     ~DialogChatsList();
 
-    QHash<uint8_t, VkChat> getChats();
-    void setChats(QHash<uint8_t, VkChat> chats);
+    void setToken(const QString &token, const bool &isEncrypted);
+
+    QHash<uint8_t, VkChat> getChats() const;
 
 private slots:
     void on_btnAddChat_clicked();
@@ -29,8 +30,11 @@ private slots:
 
 private:
     Ui::DialogChatsList *ui;
+    QString m_token;
+    bool m_isEncrypted;
     QHash<uint8_t, VkChat> m_chats;
 
+    void setChats(QHash<uint8_t, VkChat> chats);
     void updateChatsTable();
     void updateChatsTableRow(uint row, uint8_t floor, VkChat chat);
 };

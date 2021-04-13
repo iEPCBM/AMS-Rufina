@@ -1,14 +1,15 @@
 #include "dialogchatslist.h"
 #include "ui_dialogchatslist.h"
 
-DialogChatsList::DialogChatsList(QHash<uint8_t, VkChat> chats, QWidget *parent) :
+DialogChatsList::DialogChatsList(QHash<uint8_t, VkChat> chats, QString token, bool isEncrypted, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogChatsList)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
-    setChats(chats);
+    setToken(token, isEncrypted);
+    m_chats = chats;
+    updateChatsTable();
 }
 
 DialogChatsList::~DialogChatsList()
@@ -16,25 +17,21 @@ DialogChatsList::~DialogChatsList()
     delete ui;
 }
 
-QHash<uint8_t, VkChat> DialogChatsList::getChats()
+void DialogChatsList::setToken(const QString &token, const bool &isEncrypted)
 {
-    return m_chats;
-}
-
-void DialogChatsList::setChats(QHash<uint8_t, VkChat> chats)
-{
-    m_chats = chats;
-    updateChatsTable();
+    m_token = token;
+    m_isEncrypted = isEncrypted;
 }
 
 void DialogChatsList::on_btnAddChat_clicked()
 {
-    DialogAddChat dlgAddChat(this);
-    dlgAddChat.setAddedChats(getChats());
+    DialogAddChat dlgAddChat(m_token, m_isEncrypted, this);
+    dlgAddChat.setAddedChats(m_chats);
     int resultDlg = dlgAddChat.exec();
     if (resultDlg == QDialog::Accepted) {
         ui->tableChats->setRowCount(0);
-        setChats(dlgAddChat.getAddedChats());
+        m_chats = dlgAddChat.getAddedChats();
+        updateChatsTable();
     }
 }
 
@@ -75,6 +72,16 @@ void DialogChatsList::onDeleteChat(uint8_t floor, VkChat chat)
         m_chats.remove(floor);
         updateChatsTable();
     }
+}
+
+QHash<uint8_t, VkChat> DialogChatsList::getChats() const
+{
+    return m_chats;
+}
+
+void DialogChatsList::setChats(QHash<uint8_t, VkChat> chats)
+{
+
 }
 
 void DialogChatsList::updateChatsTable()

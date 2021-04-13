@@ -10,6 +10,7 @@
 #include "widgets/chatactionbutton.h"
 #include "dialogs/dialogchatconfirmation.h"
 #include "dialogs/dialogchatsettings.h"
+#include "dialogpasswordenter.h"
 #include "settings.h"
 
 #define STR_OWNER_MARKER "(создатель)"
@@ -23,7 +24,7 @@ class DialogAddChat : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogAddChat(QWidget *parent = nullptr);
+    explicit DialogAddChat(QString token, bool isEncrypted, QWidget *parent = nullptr);
     ~DialogAddChat();
 
     QHash<uint8_t, VkChat> getAddedChats() const;
@@ -60,7 +61,12 @@ private:
     //VkChatHandler m_chatHandler;
     QHash<uint8_t, VkChat> m_savedChats; //floor - VkChat
     QList<VkChat> m_listDetectedChats;
-    Settings *m_settings;
+
+    QString m_encryptedToken;
+    QString m_decryptedToken;
+    bool m_isEncryptedToken;
+
+    void  decryptToken();
 };
 
 #endif // DIALOGADDCHAT_H
