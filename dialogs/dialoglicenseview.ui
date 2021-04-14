@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Текст лицензии</string>
+   <string>Текст лицензии (САОС Руфина)</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">

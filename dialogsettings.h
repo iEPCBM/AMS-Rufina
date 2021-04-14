@@ -48,11 +48,16 @@ private slots:
 
     void on_btImportSettings_clicked();
 
+    void on_buttonBoxAct_applied();
+
+    void on_buttonBoxAct_rejected();
+
 private:
     Ui::DialogSettings *ui;
     Settings *settingsHandler;
 
     bool createPassword();
+    void saveSettings();
 
     inline void setEncryptedFlag(bool checked);
 };

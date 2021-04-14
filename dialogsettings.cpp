@@ -9,6 +9,8 @@ DialogSettings::DialogSettings(Settings *settings, QWidget *parent) :
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     settingsHandler = settings;
+    QPushButton * btApply = ui->buttonBoxAct->button ( QDialogButtonBox::Apply );
+    connect(btApply, SIGNAL(clicked()), this, SLOT(on_buttonBoxAct_applied()));
     update();
 }
 
@@ -60,6 +62,15 @@ bool DialogSettings::createPassword()
     return false;
 }
 
+void DialogSettings::saveSettings()
+{
+    settingsHandler->setEncrypted(ui->chbUseKeyCry->isChecked());
+    settingsHandler->setHsymbols(ui->leHSymbols->text());
+    settingsHandler->setSignature(ui->leSignature->text());
+    settingsHandler->save();
+    emit saved(settingsHandler);
+}
+
 inline void DialogSettings::setEncryptedFlag(bool checked)
 {
     settingsHandler->setEncrypted(checked);
@@ -69,11 +80,8 @@ inline void DialogSettings::setEncryptedFlag(bool checked)
 
 void DialogSettings::on_buttonBoxAct_accepted()
 {
-    settingsHandler->setEncrypted(ui->chbUseKeyCry->isChecked());
-    settingsHandler->setHsymbols(ui->leHSymbols->text());
-    settingsHandler->setSignature(ui->leSignature->text());
-    settingsHandler->save();
-    emit saved(settingsHandler);
+    saveSettings();
+    this->accept();
 }
 
 void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
@@ -143,4 +151,14 @@ void DialogSettings::on_btImportSettings_clicked()
     QString filePath = QFileDialog::getOpenFileName(this, "Импорт настроек", QDir::homePath(), "Файл настроек (*.xml);;Все файлы (*.*)");
     settingsHandler->importConf(filePath);
     update();
+}
+
+void DialogSettings::on_buttonBoxAct_applied()
+{
+    saveSettings();
+}
+
+void DialogSettings::on_buttonBoxAct_rejected()
+{
+    this->reject();
 }
