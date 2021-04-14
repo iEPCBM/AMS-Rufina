@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include "dialogsettings.h"
 #include "vkApi/vkapi.h"
 #include "messageassembler.h"
@@ -49,5 +50,6 @@ private:
     Ui::MainWindow *ui;
     void updateMsgPreview();
     Settings *m_settings;
+    QHash<uint8_t, QCheckBox*> m_chBoxFloorMap;
 };
 #endif // MAINWINDOW_H

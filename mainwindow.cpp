@@ -8,6 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     updateMsgPreview();
     m_settings = Settings::getInstance();
+    QList<QCheckBox*> lstFloorsChb = ui->frmFloorsContainer->findChildren<QCheckBox*>();
+    foreach (QCheckBox* checkBoxFloor, lstFloorsChb) {
+        m_chBoxFloorMap[checkBoxFloor->property("floorNumber").value<uint8_t>()] = checkBoxFloor;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -66,9 +70,41 @@ void MainWindow::on_btCheckAllFloors_clicked()
 
 void MainWindow::on_btSend_clicked()
 {
+
     MessageAssembler masm(ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
-    VkMessageDelivery msgDelivery(m_settings->getVkToken(), this);
-    msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+1, masm.assembly());
+    QString token = "";
+    if(m_settings->isEncrypted()) {
+        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_settings->getVkToken().toUtf8()), this);
+        dlgPasswEnter.exec();
+        if (dlgPasswEnter.isSuccessful()) {
+            token = QString::fromUtf8(dlgPasswEnter.getDecryptedData());
+        } else {
+            return;
+        }
+    } else {
+        token = m_settings->getVkToken();
+    }
+
+    QList<uint8_t> floors = m_chBoxFloorMap.keys();
+    QList<uint8_t> checkedFloors;
+    foreach (uint8_t floor, floors) {
+        if (m_chBoxFloorMap[floor]->isChecked()) {
+            checkedFloors.append(floor);
+        }
+    }
+
+    VkMessageDelivery msgDelivery(token, this);
+    QProgressDialog dlgSending("Отправка сообщения", "Отмена", 0, checkedFloors.length(), this);
+    dlgSending.setWindowModality(Qt::WindowModal);
+    dlgSending.show();
+    int progress = 0;
+    foreach(uint8_t floor, checkedFloors) {
+        msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_settings->getChats()[floor].getId(), masm.assembly());
+        if (dlgSending.wasCanceled())
+            break;
+        dlgSending.setValue(++progress);
+    }
+    dlgSending.setValue(checkedFloors.length());
 
     //connect(&api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(VkApiRequestFinished(QJsonDocument)));
 }
