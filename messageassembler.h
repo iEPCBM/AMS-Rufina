@@ -10,7 +10,7 @@
 class MessageAssembler
 {
 public:
-    MessageAssembler(QString message,  bool hsymbols, bool pingAll, bool signature);
+    MessageAssembler(Settings *settings, QString message,  bool hsymbols, bool pingAll, bool signature);
     virtual ~MessageAssembler(){};
     QString assembly();
 private:

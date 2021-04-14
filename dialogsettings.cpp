@@ -1,14 +1,14 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-DialogSettings::DialogSettings(QWidget *parent) :
+DialogSettings::DialogSettings(Settings *settings, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettings)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    settingsHandler = Settings::getInstance();
+    settingsHandler = settings;
     update();
 }
 
@@ -73,7 +73,7 @@ void DialogSettings::on_buttonBoxAct_accepted()
     settingsHandler->setHsymbols(ui->leHSymbols->text());
     settingsHandler->setSignature(ui->leSignature->text());
     settingsHandler->save();
-    emit saved();
+    emit saved(settingsHandler);
 }
 
 void DialogSettings::on_chbUseKeyCry_clicked(bool checked)

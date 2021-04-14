@@ -9,6 +9,8 @@
 #include "messageassembler.h"
 #include "vkApi/vkmessagedelivery.h"
 #include "settings.h"
+#include "AppInfo.h"
+#include "dialogs/dialoglicenseview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +23,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QCheckBox* getFloorChk (int floor);
 private slots:
     void on_actionSettings_triggered();
 
@@ -42,13 +43,19 @@ private slots:
 
     void on_chkAddSignature_stateChanged(int arg1);
 
+    void on_btUncheckAllFloors_clicked();
+
+    void on_actionLicenseText_triggered();
+
 public slots:
     void VkApiRequestFinished(QJsonDocument r);
-    void onSettingsUpdated();
+    void onSettingsUpdated(Settings *settings);
 
 private:
     Ui::MainWindow *ui;
     void updateMsgPreview();
+    void update();
+    void toggleFloorChechBoxes(bool state);
     Settings *m_settings;
     QHash<uint8_t, QCheckBox*> m_chBoxFloorMap;
 };

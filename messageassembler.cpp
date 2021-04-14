@@ -1,10 +1,7 @@
 #include "messageassembler.h"
 
-MessageAssembler::MessageAssembler(QString message, bool hsymbols, bool pingAll, bool signature)
+MessageAssembler::MessageAssembler(Settings *settings, QString message, bool hsymbols, bool pingAll, bool signature)
 {
-    Settings* settings;
-    settings = Settings::getInstance();
-
     m_strMessage = message;
     m_hasSignature = signature;
     m_hasHeaderSymbols = hsymbols;
@@ -12,8 +9,6 @@ MessageAssembler::MessageAssembler(QString message, bool hsymbols, bool pingAll,
 
     m_strHeaderSymblos = settings->getHsymbols();
     m_strSignature = settings->getSignature();
-    delete settings; //NOTE: minimize memory (I'm hate heap)
-    settings = NULL;
 }
 
 QString MessageAssembler::assembly()

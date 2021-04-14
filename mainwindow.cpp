@@ -6,43 +6,24 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    updateMsgPreview();
     m_settings = Settings::getInstance();
     QList<QCheckBox*> lstFloorsChb = ui->frmFloorsContainer->findChildren<QCheckBox*>();
     foreach (QCheckBox* checkBoxFloor, lstFloorsChb) {
         m_chBoxFloorMap[checkBoxFloor->property("floorNumber").value<uint8_t>()] = checkBoxFloor;
     }
+    update();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_settings;
 }
-
-QCheckBox* MainWindow::getFloorChk(int floor)
-{
-    switch (floor) {
-    case 2:
-        return this->ui->chkSecondFloor;
-        break;
-    case 3:
-        return this->ui->chkThirdFloor;
-        break;
-    case 4:
-        return this->ui->chkFourthFloor;
-        break;
-    case 5:
-        return this->ui->chkFifthFloor;
-        break;
-    }
-    return nullptr;
-}
-
 
 void MainWindow::on_actionSettings_triggered()
 {
-    DialogSettings dSettings(this);
-    connect(&dSettings, SIGNAL(saved()), this, SLOT(onSettingsUpdated()));
+    DialogSettings dSettings(m_settings, this);
+    connect(&dSettings, SIGNAL(saved(Settings*)), this, SLOT(onSettingsUpdated(Settings*)));
     dSettings.exec();
 }
 
@@ -58,20 +39,18 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionAboutProgram_triggered()
 {
-    QMessageBox::about(this,"О программе", "Система автоматизированной отправки сообщений Руфина");
+    QMessageBox::about(this,"О программе", AppInfo::buildAboutText());
 }
 
 void MainWindow::on_btCheckAllFloors_clicked()
 {
-    for (auto i=2; i<=5; i++) {
-        getFloorChk(i)->setChecked(true);
-    }
+    toggleFloorChechBoxes(true);
 }
 
 void MainWindow::on_btSend_clicked()
 {
 
-    MessageAssembler masm(ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
+    MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
     QString token = "";
     if(m_settings->isEncrypted()) {
         DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_settings->getVkToken().toUtf8()), this);
@@ -105,14 +84,23 @@ void MainWindow::on_btSend_clicked()
         dlgSending.setValue(++progress);
     }
     dlgSending.setValue(checkedFloors.length());
-
-    //connect(&api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(VkApiRequestFinished(QJsonDocument)));
 }
 
 void MainWindow::updateMsgPreview()
 {
-    MessageAssembler masm(ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
-    ui->txtedPreview->setText(masm.assembly());
+    MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
+    ui->txtedPreview->setPlainText(masm.assembly());
+}
+
+void MainWindow::update()
+{
+    QList<uint8_t> floors = m_chBoxFloorMap.keys();
+    foreach (uint8_t floor, floors) {
+        bool isContains = m_settings->getChats().contains(floor);
+        m_chBoxFloorMap[floor]->setEnabled(isContains);
+        m_chBoxFloorMap[floor]->setChecked(m_chBoxFloorMap[floor]->isChecked()&isContains);
+    }
+    updateMsgPreview();
 }
 
 void MainWindow::on_ptxtedMessageText_textChanged()
@@ -141,7 +129,27 @@ void MainWindow::VkApiRequestFinished(QJsonDocument r)
     qDebug()<<r.toJson();
 }
 
-void MainWindow::onSettingsUpdated()
+void MainWindow::onSettingsUpdated(Settings *settings)
 {
-    updateMsgPreview();
+    m_settings = settings;
+    update();
+}
+
+void MainWindow::on_btUncheckAllFloors_clicked()
+{
+    toggleFloorChechBoxes(false);
+}
+
+void MainWindow::toggleFloorChechBoxes(bool state)
+{
+    QList<uint8_t> floors = m_chBoxFloorMap.keys();
+    foreach (uint8_t floor, floors) {
+        m_chBoxFloorMap[floor]->setChecked(state&m_chBoxFloorMap[floor]->isEnabled());
+    }
+}
+
+void MainWindow::on_actionLicenseText_triggered()
+{
+    DialogLicenseView dlgLicenseView(this);
+    dlgLicenseView.exec();
 }

@@ -11,7 +11,7 @@ void VkMessageDelivery::sendMessage(int peer_id, QString text)
     QHash<QString, QString> query;
     query["random_id"]=QString::number(VkApi::getRandomId(text, peer_id));
     query["peer_id"]=QString::number(peer_id);
-    query["message"]=text;
+    query["message"]=QUrl::toPercentEncoding(text);
     connect(&m_api, SIGNAL(requestFinished(QJsonDocument)), this, SLOT(onRequestFinished(QJsonDocument)));
     m_api.sendRequest("messages.send", query);
 }
