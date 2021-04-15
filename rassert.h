@@ -11,9 +11,9 @@
         EXCEPTION_ACTIONS;}
 
 struct ErrorMessages {
-    static void errorNetwork(QWidget *parent) {
+    static void errorNetwork(QWidget *parent, QString description) {
         QMessageBox::critical(parent, "Проблемы с подключением к Интернету",
-                                 static_cast<QString>("Не удалось подключиться к серверу. Проверьте подключение к Интернету и повторитк попытку."));
+                                 static_cast<QString>("Не удалось подключиться к серверу. Проверьте подключение к Интернету и повторитк попытку.\nОшибка: "+description));
     }
     static void errorVkApi(QWidget *parent, int errorCode, QString description) {
         QMessageBox::warning(parent, "Ошибка VK API",
@@ -22,6 +22,10 @@ struct ErrorMessages {
     static void errorFileAccess(QWidget *parent, QString filePath) {
         QMessageBox::critical(parent, "Ошибка доступа к файлу",
                                  static_cast<QString>("Ошибка доступа к файлу: ")+filePath);
+    }
+    static void errorXmlParse(QWidget *parent, QString filePath, QString strError="") {
+        QMessageBox::critical(parent, "Ошибка обработки XML файла",
+                                 (static_cast<QString>("Ошибка обработки XML файла: ")+filePath + "\n" + strError).trimmed());
     }
 };
 

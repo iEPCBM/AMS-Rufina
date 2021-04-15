@@ -48,7 +48,10 @@ QJsonDocument VkApi::parseResponse()
 
 int32_t VkApi::getRandomId(QString strMsg, int peerId)
 {
-    int32_t val = QCryptographicHash::hash(strMsg.toUtf8(), QCryptographicHash::Sha256).at(peerId%256)-peerId/(strMsg.length()*peerId%256);
+    QByteArray hash = QCryptographicHash::hash(strMsg.toUtf8(), QCryptographicHash::Sha256);
+    int32_t val = hash.at(peerId%256)-peerId/(strMsg.length()*hash.at(strMsg.length()%256));
+    int8_t factor = hash.at(peerId%256)%2==0?-1:1;
+    val += factor*peerId/(strMsg.length()*hash.at(strMsg.length()%256));
     qDebug()<<val;
     return val;
 }
@@ -61,6 +64,10 @@ QJsonDocument VkApi::getJsonResponse() const
 void VkApi::onFinished(QNetworkReply *r)
 {
     m_loop.exit();
+    if (r->error()!=QNetworkReply::NoError) {
+        m_isError=true;
+        ErrorMessages::errorNetwork(nullptr, r->errorString());
+    }
     m_byteArrReply = r->readAll();
     m_jsonResponse = parseResponse();
     emit requestFinished(m_jsonResponse);

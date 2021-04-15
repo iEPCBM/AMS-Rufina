@@ -30,6 +30,9 @@ public:
 signals:
     void saved(Settings*);
 
+public slots:
+    void onApplied();
+
 private slots:
 
     void on_btEditChatsList_clicked();
@@ -47,8 +50,6 @@ private slots:
     void on_btExportSettings_clicked();
 
     void on_btImportSettings_clicked();
-
-    void on_buttonBoxAct_applied();
 
     void on_buttonBoxAct_rejected();
 

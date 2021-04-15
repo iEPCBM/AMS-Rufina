@@ -49,7 +49,15 @@ void MainWindow::on_btCheckAllFloors_clicked()
 
 void MainWindow::on_btSend_clicked()
 {
-
+    QList<QCheckBox*> chBoxChats = m_chBoxFloorMap.values();
+    bool isOneChBoxChecked = false;
+    foreach (QCheckBox* chBoxChat, chBoxChats) {
+        isOneChBoxChecked |= chBoxChat->isChecked();
+    }
+    if (!isOneChBoxChecked) {
+        QMessageBox::critical(this, "Ошибка", "Ни одна из бесед не отмечена. Для отправки сообщения отметьте хотя бы одну беседу.");
+        return;
+    }
     MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
     QString token = "";
     if(m_settings->isEncrypted()) {

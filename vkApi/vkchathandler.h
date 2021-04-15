@@ -10,6 +10,7 @@
 #include "vkApi/vkuserhandler.h"
 #include "settings.h"
 #include "vkApi/vkchat.h"
+#include "vkApi/vkerror.h"
 #include <QObject>
 
 class VkChatHandler : public QObject
@@ -28,6 +29,8 @@ public:
     void responseChatParse();
     VkChat getChat() const;
 
+    VkError getVkError() const;
+
 signals:
     void dataWasGot(VkChat);
 
@@ -40,6 +43,8 @@ private:
     VkApi api;
     VkChat m_chat;
     bool m_isValid;
+    bool m_hasError;
+    VkError m_vkError;
 };
 
 #endif // VKCHATHANDLER_H

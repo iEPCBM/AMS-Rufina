@@ -4,6 +4,7 @@
 #include "vkApi/vkchat.h"
 #include <QXmlStreamReader>
 #include <QFile>
+#include "rassert.h"
 
 
 #define CONFIG_WRAPPER_TAG "config"

@@ -79,10 +79,10 @@ void DialogAddChat::findChats()
 {
     uint32_t id = 1;
     decryptToken();
-    if (m_decryptedToken.isEmpty()) {
+    /*if (m_decryptedToken.isEmpty()) {
         stopSearching();
         return;
-    }
+    }*/
 
     VkChatHandler chatHandler(this, m_decryptedToken);
     VkUserHandler usrHandler(this, m_decryptedToken);
@@ -106,6 +106,9 @@ void DialogAddChat::findChats()
 
             if (chatHandler.hasError()) {
                 stopSearching();
+                if (chatHandler.getVkError().code()!=927&&chatHandler.getVkError().hasError()) {
+                    ErrorMessages::errorVkApi(this, chatHandler.getVkError().code(), chatHandler.getVkError().description());
+                }
                 break;
             }
 

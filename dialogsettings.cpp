@@ -9,8 +9,8 @@ DialogSettings::DialogSettings(Settings *settings, QWidget *parent) :
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     settingsHandler = settings;
-    QPushButton * btApply = ui->buttonBoxAct->button ( QDialogButtonBox::Apply );
-    connect(btApply, SIGNAL(clicked()), this, SLOT(on_buttonBoxAct_applied()));
+    QPushButton *btApply = ui->buttonBoxAct->button (QDialogButtonBox::Apply);
+    connect(btApply, SIGNAL(clicked()), this, SLOT(onApplied()));
     update();
 }
 
@@ -153,7 +153,7 @@ void DialogSettings::on_btImportSettings_clicked()
     update();
 }
 
-void DialogSettings::on_buttonBoxAct_applied()
+void DialogSettings::onApplied()
 {
     saveSettings();
 }

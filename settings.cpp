@@ -11,6 +11,7 @@ void Settings::exportConf(QString strPath)
     QFile *file = new QFile(strPath);
     if (!file->open(QIODevice::WriteOnly)) {
         qDebug()<<"err_parse";
+        ErrorMessages::errorFileAccess(nullptr, strPath);
         return;
     }
     writeConf(file);
@@ -22,6 +23,7 @@ void Settings::importConf(QString strPath)
     QFile *file = new QFile(strPath);
     if (!file->open(QIODevice::ReadOnly)) {
         qDebug()<<"err_parse";
+        ErrorMessages::errorFileAccess(nullptr, strPath);
         return;
     }
     readConf(file);
@@ -35,13 +37,7 @@ void Settings::save()
 
 void Settings::extract()
 {
-    QFile *file = new QFile(m_strPath);
-    if (!file->open(QIODevice::ReadOnly)) {
-        qDebug()<<"err_parse";
-        return;
-    }
-    readConf(file);
-    file->close();
+    importConf(m_strPath);
 }
 
 Settings* Settings::getInstance()
@@ -105,6 +101,7 @@ bool Settings::writeConf(QFile *file)
 {
     QXmlStreamWriter xml(file);
     if (xml.hasError()) {
+         ErrorMessages::errorFileAccess(nullptr, file->fileName());
         return false;
     }
     xml.setAutoFormatting(true);
@@ -148,7 +145,7 @@ bool Settings::readConf(QFile *file)
     QXmlStreamReader xml(file);
     QXmlStreamAttributes attributes;
     if (xml.hasError()) {
-        qDebug()<<xml.errorString();
+        ErrorMessages::errorXmlParse(nullptr, file->fileName(), xml.errorString());
         return false;
     }
 
