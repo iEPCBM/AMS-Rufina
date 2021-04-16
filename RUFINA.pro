@@ -4,7 +4,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
-VERSION = 1.0.0
+TEMPLATE = app
+VERSION = 1.0.0.0
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -14,15 +15,15 @@ SOURCES += \
     Dialogs/dialogedittoken.cpp \
     aesfacade.cpp \
     afterauthstrategy.cpp \
-    dialogaddchat.cpp \
-    dialogchatslist.cpp \
-    dialogcreatepassword.cpp \
-    dialogpasswordenter.cpp \
+    dialogs/dialogaddchat.cpp \
+    dialogs/dialogchatslist.cpp \
+    dialogs/dialogcreatepassword.cpp \
+    dialogs/dialogpasswordenter.cpp \
     dialogs/dialogchatconfirmation.cpp \
     dialogs/dialogchatsettings.cpp \
     dialogs/dialoglicenseview.cpp \
-    dialogsettings.cpp \
-    dialogtoken.cpp \
+    dialogs/dialogsettings.cpp \
+    dialogs/dialogtoken.cpp \
     floor.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -44,15 +45,15 @@ HEADERS += \
     Dialogs/dialogedittoken.h \
     aesfacade.h \
     afterauthstrategy.h \
-    dialogaddchat.h \
-    dialogchatslist.h \
-    dialogcreatepassword.h \
+    dialogs/dialogaddchat.h \
+    dialogs/dialogchatslist.h \
+    dialogs/dialogcreatepassword.h \
     dialogpasswordenter.h \
     dialogs/dialogchatconfirmation.h \
     dialogs/dialogchatsettings.h \
     dialogs/dialoglicenseview.h \
-    dialogsettings.h \
-    dialogtoken.h \
+    dialogs/dialogsettings.h \
+    dialogs/dialogtoken.h \
     floor.h \
     mainwindow.h \
     messageassembler.h \
@@ -72,17 +73,17 @@ HEADERS += \
     rassert.h
 
 FORMS += \
-    Dialogs/dialogedittoken.ui \
-    dialogaddchat.ui \
-    dialogchatslist.ui \
-    dialogcreatepassword.ui \
-    dialogpasswordenter.ui \
+    dialogs/dialogedittoken.ui \
+    dialogs/dialogaddchat.ui \
+    dialogs/dialogchatslist.ui \
+    dialogs/dialogcreatepassword.ui \
+    dialogs/dialogpasswordenter.ui \
     dialogs/dialogchatconfirmation.ui \
     dialogs/dialogchatsettings.ui \
     dialogs/dialoglicenseview.ui \
-    dialogsettings.ui \
-    dialogsettings.ui \
-    dialogtoken.ui \
+    dialogs/dialogsettings.ui \
+    dialogs/dialogsettings.ui \
+    dialogs/dialogtoken.ui \
     mainwindow.ui
 
 TRANSLATIONS += \
@@ -96,4 +97,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources.qrc
 
-RC_ICONS = assets/icons/icon.ico
+win32 {
+    QMAKE_TARGET_COMPANY = "Rishat D. Kagirov"
+    QMAKE_TARGET_PRODUCT = "AMS Rufina"
+    QMAKE_TARGET_DESCRIPTION = "System of automated sending messages to conversations of VKontakte"
+    QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2021 Rishat D. Kagirov"
+    RC_ICONS = assets/icons/icon.ico
+    RC_LANG = 0x0419
+    RC_CODEPAGE = 1200
+}
