@@ -2,7 +2,7 @@
 #define DIALOGCHATSLIST_H
 
 #include <QDialog>
-#include "dialogaddchat.h"
+#include "dialogs/dialogaddchat.h"
 #include "dialogs/dialogchatsettings.h"
 #include "vkApi/vkchat.h"
 #include <QHash>

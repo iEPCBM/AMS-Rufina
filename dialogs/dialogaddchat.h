@@ -10,7 +10,7 @@
 #include "widgets/chatactionbutton.h"
 #include "dialogs/dialogchatconfirmation.h"
 #include "dialogs/dialogchatsettings.h"
-#include "dialogpasswordenter.h"
+#include "dialogs/dialogpasswordenter.h"
 #include "settings.h"
 
 #define STR_OWNER_MARKER "(создатель)"

@@ -58,7 +58,10 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
         if (btClicked==QMessageBox::No) {
             return;
         }
-        setChatAddedState(findRowByChatId(m_savedChats[floor].getId()), false);
+        int32_t oldRow = findRowByChatId(m_savedChats[floor].getId());
+        if (oldRow >= 0) {
+            setChatAddedState(oldRow, false);
+        }
     }
     updateChatTitleInRow(row, chat.getTitle());
     m_savedChats[floor]=chat;
@@ -78,7 +81,6 @@ void DialogAddChat::on_btStartStopFind_clicked()
 void DialogAddChat::findChats()
 {
     uint32_t id = 1;
-    decryptToken();
     /*if (m_decryptedToken.isEmpty()) {
         stopSearching();
         return;
@@ -95,6 +97,12 @@ void DialogAddChat::findChats()
             if (!chat.getAdministratorsIds().isEmpty()) {
                 usrHandler.sendRequest(
                         filterUserIds(chat.getAdministratorsIds()));
+                if (usrHandler.hasError()) {
+                    VkError vkErr = usrHandler.getVkError();
+                    if (vkErr.hasError()) {
+                        ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description() + "\n\nЭта ошибка некритична. После закрытия окна поиск продолжится.");
+                    }
+                }
                 admins = usrHandler.getUsers();
             }
             usrHandler.clear();
@@ -106,8 +114,9 @@ void DialogAddChat::findChats()
 
             if (chatHandler.hasError()) {
                 stopSearching();
-                if (chatHandler.getVkError().code()!=927&&chatHandler.getVkError().hasError()) {
-                    ErrorMessages::errorVkApi(this, chatHandler.getVkError().code(), chatHandler.getVkError().description());
+                VkError vkErr = usrHandler.getVkError();
+                if (vkErr.code()!=927&&vkErr.hasError()) {
+                    ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description());
                 }
                 break;
             }
@@ -219,6 +228,7 @@ void DialogAddChat::startSearching()
     ui->btStartStopFind->setText("Завершить поиск");
     ui->progressBar->setMaximum(0);
     ui->tableChats->setRowCount(0);
+    decryptToken();
     findChats();
 }
 
@@ -283,9 +293,9 @@ void DialogAddChat::decryptToken()
         int resultDlg = dlgPasswEnter.exec();
         if (dlgPasswEnter.isSuccessful()) {
             m_decryptedToken = QString::fromUtf8(dlgPasswEnter.getDecryptedData());
+        } else {
+            stopSearching();
         }
-    } else if (!m_isEncryptedToken) {
-        m_decryptedToken = m_encryptedToken;
     }
 }
 

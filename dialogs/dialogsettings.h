@@ -5,12 +5,12 @@
 #include <QTextCodec>
 #include <QDebug>
 #include <QFileDialog>
-#include "dialogchatslist.h"
-#include "dialogpasswordenter.h"
-#include "settings.h"
-#include "dialogtoken.h"
-#include "dialogcreatepassword.h"
+#include "dialogs/dialogchatslist.h"
+#include "dialogs/dialogpasswordenter.h"
+#include "dialogs/dialogtoken.h"
+#include "dialogs/dialogcreatepassword.h"
 #include "dialogs/dialogedittoken.h"
+#include "settings.h"
 #include "aesfacade.h"
 
 namespace Ui {

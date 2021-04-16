@@ -9,7 +9,7 @@ DialogChatConfirmation::DialogChatConfirmation(VkChat chat, QString token, QWidg
     ui->setupUi(this);
     ui->leCodeInput->setValidator(new QRegExpValidator(QRegExp("^[a-fA-F0-9]+$"), this));
     m_chat = chat;
-    generateCode();
+    QTimer::singleShot(0, this, SLOT(onShowed())); //Hmmm. After
 }
 
 DialogChatConfirmation::~DialogChatConfirmation()
@@ -47,6 +47,13 @@ void DialogChatConfirmation::generateCode()
     QByteArray crcHash = crc32b(m_data2hash.toUtf8()).toHex();
     qDebug()<<crcHash;
     m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat.getId(), STR_CONFIRMATION_PREAMBLE+QString::fromUtf8(crcHash));
+    if(m_msgDelivery.hasError()) {
+        VkError vkErr = m_msgDelivery.getVkError();
+        if (vkErr.hasError()) {
+            ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description());
+        }
+        this->reject();
+    }
 }
 
 bool DialogChatConfirmation::isConfirmated() const
@@ -73,4 +80,9 @@ void DialogChatConfirmation::on_buttonBox_accepted()
         m_isConfirmated = true;
         this->close();
     }
+}
+
+void DialogChatConfirmation::onShowed()
+{
+    generateCode();
 }

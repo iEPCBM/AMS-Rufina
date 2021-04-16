@@ -5,10 +5,13 @@
 #include <QDebug>
 #include <QTime>
 #include <QDate>
+#include <QTimer>
 #include <QRegExpValidator>
 #include <QMessageBox>
 #include "vkApi/vkchat.h"
 #include "vkApi/vkmessagedelivery.h"
+#include "rassert.h"
+
 
 #define CRC_SALT "Руфина, прости меня. Ты мне правда нравишься."
 #define STR_CONFIRMATION_PREAMBLE "Код подтверждения: "
@@ -32,6 +35,7 @@ private slots:
 
     void on_buttonBox_accepted();
     void accept(){}
+    void onShowed();
 private:
     Ui::DialogChatConfirmation *ui;
     QByteArray crc32b(QByteArray message);
