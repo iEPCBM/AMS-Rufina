@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include "dialogsettings.h"
+#include "dialogs/dialogsettings.h"
 #include "vkApi/vkapi.h"
 #include "messageassembler.h"
 #include "vkApi/vkmessagedelivery.h"

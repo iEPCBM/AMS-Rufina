@@ -42,6 +42,13 @@ QJsonDocument VkApi::parseResponse()
     QJsonObject json_obj = json_doc.object();
     if (parseError.error != QJsonParseError::NoError || json_obj.contains("error")) {
         m_isError = true;
+        if (json_obj.contains("error")) {
+            QJsonObject json_vkError = json_obj.value("error").toObject();
+            int errCode = json_vkError.value("error_code").toInt();
+            QString errMsg = json_vkError.value("error_msg").toString();
+            m_vkError.setCode(errCode);
+            m_vkError.setDescription(errMsg);
+        }
     }
     return json_doc;
 }
@@ -85,6 +92,11 @@ QString VkApi::assemblyQuery(QHash<QString, QString> args)
         }
     }
     return strQuery;
+}
+
+VkError VkApi::getVkError() const
+{
+    return m_vkError;
 }
 
 bool VkApi::isError() const

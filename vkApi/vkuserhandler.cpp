@@ -18,6 +18,10 @@ void VkUserHandler::sendRequest(uint32_t id)
     query["user_ids"]=QString::number(id);
     connect(&m_api,SIGNAL(requestFinished(QJsonDocument)),this,SLOT(onRequestFinished(QJsonDocument)));
     m_api.sendRequest("users.get", query);
+    if (m_api.isError()) {
+        m_vkError = m_api.getVkError();
+        m_hasError = true;
+    }
     QJsonArray arrResp = m_api.getJsonResponse().object().value("response").toArray();
     foreach(const QJsonValue &val, arrResp) {
         QJsonObject obj = val.toObject();

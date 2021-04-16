@@ -60,7 +60,7 @@ void MainWindow::on_btSend_clicked()
     }
     MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
     QString token = "";
-    if(m_settings->isEncrypted()) {
+    if (m_settings->isEncrypted()) {
         DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_settings->getVkToken().toUtf8()), this);
         dlgPasswEnter.exec();
         if (dlgPasswEnter.isSuccessful()) {
@@ -87,6 +87,16 @@ void MainWindow::on_btSend_clicked()
     int progress = 0;
     foreach(uint8_t floor, checkedFloors) {
         msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_settings->getChats()[floor].getId(), masm.assembly());
+        if(msgDelivery.hasError()) {
+            VkError vkErr = msgDelivery.getVkError();
+            if (vkErr.hasError()) {
+                ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description()+
+                                          "\nОшибка возникла при отправке сообщения в беседу: \""+
+                                          m_settings->getChats()[floor].getTitle()+
+                                          "\" (ID: "+QString::number(m_settings->getChats()[floor].getId())+").");
+                dlgSending.cancel();
+            }
+        }
         if (dlgSending.wasCanceled())
             break;
         dlgSending.setValue(++progress);

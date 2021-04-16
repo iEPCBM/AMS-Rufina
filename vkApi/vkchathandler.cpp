@@ -20,11 +20,6 @@ bool VkChatHandler::isValid()
     return m_isValid;
 }
 
-bool VkChatHandler::hasError()
-{
-    return m_jsonResp.object().contains("error")|m_hasError;
-}
-
 void VkChatHandler::getConversationData(uint32_t id)
 {
     m_chat.setId(id);
@@ -43,13 +38,7 @@ void VkChatHandler::responseChatParse()
     if (api.isError()) {
         m_isValid = false;
         m_hasError = true;
-        if (json_obj.contains("error")) {
-            QJsonObject json_vkError = json_obj.value("error").toObject();
-            int errCode = json_vkError.value("error_code").toInt();
-            QString errMsg = json_vkError.value("error_msg").toString();
-            m_vkError.setCode(errCode);
-            m_vkError.setDescription(errMsg);
-        }
+        m_vkError = api.getVkError();
         return;
     }
     QJsonObject responseObj = json_obj.value("response").toObject();
@@ -74,11 +63,6 @@ void VkChatHandler::responseChatParse()
 void VkChatHandler::getConversationFinished(QJsonDocument json_doc)
 {
     qDebug()<<"Finished";
-}
-
-VkError VkChatHandler::getVkError() const
-{
-    return m_vkError;
 }
 
 VkChat VkChatHandler::getChat() const

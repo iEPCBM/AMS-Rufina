@@ -4,12 +4,16 @@
 #include <QString>
 #include <QObject>
 #include "vkApi/vkuser.h"
+#include "vkApi/vkerror.h"
+#include "vkApi/AbstractMethod.h"
 
-class VkUserHandler : public QObject
+
+class VkUserHandler : public QObject, public AbstractMethod
 {
     Q_OBJECT
 public:  
     explicit VkUserHandler(QObject *parent=nullptr, QString token="");
+    ~VkUserHandler() {}
 
 public:
     void clear();

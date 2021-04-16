@@ -13,6 +13,7 @@
 #include <QNetworkRequest>
 #include <QTextCodec>
 #include <QEventLoop>
+#include "vkApi/vkerror.h"
 
 #define VK_API_VER "5.130"
 #define VK_API_ENDPOINT "https://api.vk.com/method/"
@@ -30,6 +31,8 @@ public:
     static int32_t getRandomId(QString strMsg, int peerId);
     QJsonDocument getJsonResponse() const;
     bool isError() const;
+
+    VkError getVkError() const;
 
 signals:
     void requestFinished(QJsonDocument json_doc);
@@ -49,6 +52,7 @@ private:
     QScopedPointer<QNetworkReply, QScopedPointerDeleteLater> netReply;
     bool m_isError = false;
     QJsonDocument m_jsonResponse;
+    VkError m_vkError;
 };
 
 #endif // VKAPI_H
