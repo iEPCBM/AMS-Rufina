@@ -12,7 +12,7 @@ VERSION = 1.0.0.0
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Dialogs/dialogedittoken.cpp \
+    dialogs/dialogedittoken.cpp \
     aesfacade.cpp \
     afterauthstrategy.cpp \
     dialogs/dialogaddchat.cpp \
@@ -48,7 +48,7 @@ HEADERS += \
     dialogs/dialogaddchat.h \
     dialogs/dialogchatslist.h \
     dialogs/dialogcreatepassword.h \
-    dialogpasswordenter.h \
+    dialogs/dialogpasswordenter.h \
     dialogs/dialogchatconfirmation.h \
     dialogs/dialogchatsettings.h \
     dialogs/dialoglicenseview.h \
