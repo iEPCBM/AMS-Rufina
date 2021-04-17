@@ -8,7 +8,7 @@ DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
     ui->setupUi(this);
     qDebug()<<"Well";
     ui->tableChats->resizeColumnsToContents();
-
+    ui->lbChatsNotFound->setVisible(false);
     m_isEncryptedToken = isEncrypted;
     if (m_isEncryptedToken) {
         m_encryptedToken = token;
@@ -30,10 +30,9 @@ void DialogAddChat::onChatGot(VkChat chat)
 
 void DialogAddChat::onAddChat(uint row, VkChat chat)
 {
-    DialogChatSettings dlgChatStg(chat, this);
     if (!chat.hasTitle()||!chat.hasOwner()) {
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
-                             "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота. Чтобы добавить эту беседу, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
+                             "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота или же тем, что бота исключили из беседы. Если бот состоит в беседе, то для того, чтобы добавить эту беседу в систему, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
             if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
 
@@ -45,32 +44,29 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
             }
         } else return;
     }
-    dlgChatStg.exec();
 
-    chat = dlgChatStg.chat();
-    uint8_t floor = dlgChatStg.floor();
-    //addChatToTable();
-    if (hasFloorConflict(floor)) {
-        QMessageBox::StandardButtons btClicked = QMessageBox::question(this, "Заменить беседу?",
-                             "Беседа для " + QString::number(floor)+ " этажа уже существует. Заменить беседу \"" +
-                                                                      m_savedChats[floor].getTitle() + "\" на беседу \"" +
-                                                                      chat.getTitle() + "\"?");
-        if (btClicked==QMessageBox::No) {
-            return;
+    DialogChatSettings dlgChatStg(chat, m_savedChats, this);
+    int resultDlg = dlgChatStg.exec();
+    if (resultDlg == QDialog::Accepted) {
+        chat = dlgChatStg.chat();
+        uint8_t floor = dlgChatStg.floor();
+        //addChatToTable();
+        if (hasFloorConflict(floor)) {
+            int32_t oldRow = findRowByChatId(m_savedChats[floor].getId());
+            if (oldRow >= 0) {
+                setChatAddedState(oldRow, false);
+            }
         }
-        int32_t oldRow = findRowByChatId(m_savedChats[floor].getId());
-        if (oldRow >= 0) {
-            setChatAddedState(oldRow, false);
-        }
+        updateChatTitleInRow(row, chat.getTitle());
+        m_savedChats[floor]=chat;
+        setChatAddedState(row, true);
     }
-    updateChatTitleInRow(row, chat.getTitle());
-    m_savedChats[floor]=chat;
-    setChatAddedState(row, true);
 }
 
 
 void DialogAddChat::on_btStartStopFind_clicked()
 {
+    ui->lbChatsNotFound->setVisible(false);
     if (!m_isSearching) {
         startSearching();
     } else {
@@ -85,18 +81,32 @@ void DialogAddChat::findChats()
         stopSearching();
         return;
     }*/
-
+    bool isSuccessful = true;
     VkChatHandler chatHandler(this, m_decryptedToken);
     VkUserHandler usrHandler(this, m_decryptedToken);
     while (m_isSearching) {
         if (!hasSavedChat(id)) {
             connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
             chatHandler.getConversationData(id);
+            if (chatHandler.hasError()) {
+                stopSearching();
+                VkError vkErr = chatHandler.getVkError();
+                isSuccessful = false;
+                if (vkErr.hasError()) {
+                    if (vkErr.code()!=927) {
+                        ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description());
+                    }
+                    else {
+                        isSuccessful = true;
+                    }
+                }
+                break;
+            }
             VkChat chat = chatHandler.getChat();
             QList<VkUser> admins;
-            if (!chat.getAdministratorsIds().isEmpty()) {
-                usrHandler.sendRequest(
-                        filterUserIds(chat.getAdministratorsIds()));
+            QList<uint32_t> usersAdmIds = filterUserIds(chat.getAdministratorsIds());
+            if (!usersAdmIds.isEmpty()) {
+                usrHandler.sendRequest(usersAdmIds);
                 if (usrHandler.hasError()) {
                     VkError vkErr = usrHandler.getVkError();
                     if (vkErr.hasError()) {
@@ -110,25 +120,16 @@ void DialogAddChat::findChats()
             if (chat.hasOwner()) {
                 usrHandler.sendRequest(chat.getOwnerId());
                 owner = usrHandler.getUsers().at(0);
+                usrHandler.clear();
             }
-
-            if (chatHandler.hasError()) {
-                stopSearching();
-                VkError vkErr = usrHandler.getVkError();
-                if (vkErr.code()!=927&&vkErr.hasError()) {
-                    ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description());
-                }
-                break;
-            }
-
             m_listDetectedChats.append(chat);
             addChatToTable(chatHandler.getChat(), owner, admins, m_listDetectedChats.length()-1);
             chatHandler.clear();
         }
         id++;
     }
-    if (ui->tableChats->rowCount()==0) {
-
+    if (m_listDetectedChats.isEmpty()&&isSuccessful) {
+        ui->lbChatsNotFound->setVisible(true);
     }
 }
 
@@ -153,14 +154,14 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     }
     QString strAdmList = "";
     if (chat.hasOwner()) {
-        strAdmList = "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a>";
-        strAdmList += QString(" ")+STR_OWNER_MARKER+"\n";
-        strAdmList += "</p>\n";
+        strAdmList = "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a> " +
+                        QString(STR_OWNER_MARKER)+"\n"
+                        "</p>\n";
     }
     else {
         strAdmList = STR_UNKNOWN;
     }
-    if (chat.hasAdmins()) {
+    if (!admins.isEmpty()) {
         foreach (VkUser user, admins) {
             strAdmList += "<p><a href=\"https://vk.com/id"+QString::number(user.getId())+"\">" + user.getAssembledName() + "</a></p>\n";
         }
@@ -228,8 +229,11 @@ void DialogAddChat::startSearching()
     ui->btStartStopFind->setText("Завершить поиск");
     ui->progressBar->setMaximum(0);
     ui->tableChats->setRowCount(0);
-    decryptToken();
-    findChats();
+    if (decryptToken()) {
+        findChats();
+    } else {
+        stopSearching();
+    }
 }
 
 void DialogAddChat::stopSearching()
@@ -266,8 +270,10 @@ QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)
     foreach (int id, usrIds) {
         if (isUserId(id)) {
             retList.append(id);
+            qDebug()<<"Admin "<<id;
         }
     }
+    qDebug()<<retList;
     return retList;
 }
 
@@ -286,7 +292,7 @@ void DialogAddChat::setChatAddedState(uint row, bool state)
     ui->tableChats->resizeColumnsToContents();
 }
 
-void DialogAddChat::decryptToken()
+bool DialogAddChat::decryptToken()
 {
     if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
         DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_encryptedToken.toUtf8()), this);
@@ -294,9 +300,10 @@ void DialogAddChat::decryptToken()
         if (dlgPasswEnter.isSuccessful()) {
             m_decryptedToken = QString::fromUtf8(dlgPasswEnter.getDecryptedData());
         } else {
-            stopSearching();
+            return false;
         }
     }
+    return true;
 }
 
 QHash<uint8_t, VkChat> DialogAddChat::getAddedChats() const

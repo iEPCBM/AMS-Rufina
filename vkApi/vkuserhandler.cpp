@@ -9,7 +9,9 @@ VkUserHandler::VkUserHandler(QObject *parent, QString token)
 
 void VkUserHandler::clear()
 {
-    m_vecUsers.clear();
+    if (!m_vecUsers.isEmpty()) {
+        m_vecUsers.clear();
+    }
 }
 
 void VkUserHandler::sendRequest(uint32_t id)

@@ -39,7 +39,7 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionAboutProgram_triggered()
 {
-    QMessageBox::about(this,"О программе", AppInfo::buildAboutText());
+    QMessageBox::about(this, "О САОС Руфина", AppInfo::buildAboutText());
 }
 
 void MainWindow::on_btCheckAllFloors_clicked()
@@ -49,15 +49,10 @@ void MainWindow::on_btCheckAllFloors_clicked()
 
 void MainWindow::on_btSend_clicked()
 {
-    QList<QCheckBox*> chBoxChats = m_chBoxFloorMap.values();
-    bool isOneChBoxChecked = false;
-    foreach (QCheckBox* chBoxChat, chBoxChats) {
-        isOneChBoxChecked |= chBoxChat->isChecked();
-    }
-    if (!isOneChBoxChecked) {
-        QMessageBox::critical(this, "Ошибка", "Ни одна из бесед не отмечена. Для отправки сообщения отметьте хотя бы одну беседу.");
+    if (!checkUsersData()) {
         return;
     }
+
     MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
     QString token = "";
     if (m_settings->isEncrypted()) {
@@ -81,11 +76,13 @@ void MainWindow::on_btSend_clicked()
     }
 
     VkMessageDelivery msgDelivery(token, this);
+    QHash<uint8_t, bool> isSentMsg;
     QProgressDialog dlgSending("Отправка сообщения", "Отмена", 0, checkedFloors.length(), this);
     dlgSending.setWindowModality(Qt::WindowModal);
     dlgSending.show();
     int progress = 0;
     foreach(uint8_t floor, checkedFloors) {
+        dlgSending.setLabelText("Отправка сообщения в \"" + m_settings->getChats()[floor].getTitle() + "\"");
         msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_settings->getChats()[floor].getId(), masm.assembly());
         if(msgDelivery.hasError()) {
             VkError vkErr = msgDelivery.getVkError();
@@ -94,14 +91,20 @@ void MainWindow::on_btSend_clicked()
                                           "\nОшибка возникла при отправке сообщения в беседу: \""+
                                           m_settings->getChats()[floor].getTitle()+
                                           "\" (ID: "+QString::number(m_settings->getChats()[floor].getId())+").");
+            } else {
                 dlgSending.cancel();
             }
+            isSentMsg[floor]=false;
+        }
+        else {
+            isSentMsg[floor]=true;
         }
         if (dlgSending.wasCanceled())
             break;
         dlgSending.setValue(++progress);
     }
     dlgSending.setValue(checkedFloors.length());
+    afterSentMessage(isSentMsg);
 }
 
 void MainWindow::updateMsgPreview()
@@ -164,6 +167,45 @@ void MainWindow::toggleFloorChechBoxes(bool state)
     foreach (uint8_t floor, floors) {
         m_chBoxFloorMap[floor]->setChecked(state&m_chBoxFloorMap[floor]->isEnabled());
     }
+}
+
+void MainWindow::afterSentMessage(QHash<uint8_t, bool> data)
+{
+    QList<uint8_t> floors = data.keys();
+    QString successfulSend = "";
+    QString failedSend = "";
+    foreach (uint8_t floor, floors) {
+        QString chatData = QString("\"") + m_settings->getChats()[floor].getTitle() + "\" (" + QString::number(floor) + " этаж)\n";
+        if (data[floor]) {
+            successfulSend += chatData;
+        }
+        else {
+            failedSend += chatData;
+        }
+    }
+    QString msgText = (successfulSend.isEmpty()?QString():(QString("Сообщение было отправлено в беседу(ы):\n") + successfulSend)) +
+                      (failedSend.isEmpty()?"":("\nВозникла ошибка при отправке сообщения в беседу(ы):\n" + failedSend));
+    QMessageBox::information(this, "Отчет об отправке", msgText.trimmed());
+}
+
+bool MainWindow::checkUsersData()
+{
+    QList<QCheckBox*> chBoxChats = m_chBoxFloorMap.values();
+    bool isOneChBoxChecked = false;
+    foreach (QCheckBox* chBoxChat, chBoxChats) {
+        isOneChBoxChecked |= chBoxChat->isChecked();
+    }
+    if (!isOneChBoxChecked) {
+        QMessageBox::warning(this, "Ошибка", "Ни одна из бесед не отмечена. Для отправки сообщения отметьте хотя бы одну беседу.");
+        return false;
+    }
+
+    MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
+    if (masm.assembly().isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", "Сообщение пустое!");
+        return false;
+    }
+    return true;
 }
 
 void MainWindow::on_actionLicenseText_triggered()

@@ -4,9 +4,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
-TEMPLATE = app
-VERSION = 1.0.0.0
-
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -97,6 +94,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources.qrc
 
+
+TEMPLATE = app
 win32 {
     QMAKE_TARGET_COMPANY = "Rishat D. Kagirov"
     QMAKE_TARGET_PRODUCT = "AMS Rufina"
@@ -105,4 +104,16 @@ win32 {
     RC_ICONS = assets/icons/icon.ico
     RC_LANG = 0x0419
     RC_CODEPAGE = 1200
+    VERSION = 1.0.0.32
+    DEFINES += APP_VER_BUILD=32
 }
+else {
+    VERSION = 1.0.0
+}
+VER_MAJ = 1
+VER_MIN = 0
+VER_PAT = 0
+
+DEFINES += APP_VER_MAJ=$$VER_MAJ
+DEFINES += APP_VER_MIN=$$VER_MIN
+DEFINES += APP_VER_PAT=$$VER_PAT

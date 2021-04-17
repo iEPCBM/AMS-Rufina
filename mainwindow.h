@@ -56,6 +56,8 @@ private:
     void updateMsgPreview();
     void update();
     void toggleFloorChechBoxes(bool state);
+    void afterSentMessage(QHash<uint8_t, bool> data);
+    bool checkUsersData();
     Settings *m_settings;
     QHash<uint8_t, QCheckBox*> m_chBoxFloorMap;
 };

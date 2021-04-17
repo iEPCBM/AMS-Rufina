@@ -51,7 +51,6 @@ void VkError::fillErrorMsgList()
         ErrorMessages::errorFileAccess(nullptr, fileList.fileName());
         return;
     }
-    //QTextStream in(&fileList);
     while (!fileList.atEnd())
     {
        QString line = QString::fromUtf8(fileList.readLine());
@@ -60,9 +59,6 @@ void VkError::fillErrorMsgList()
        uint16_t code = errNote[0].toInt(&isOk);
        if (isOk) {
            m_errorMsgList[code] = errNote[1];
-       } else {
-           ErrorMessages::errorFileAccess(nullptr, fileList.fileName());
-           break;
        }
     }
 

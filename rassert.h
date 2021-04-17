@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-#define R_ASSERT(EXPRESSION, PARENT, EXCEPTION_ACTIONS) \
+#define R_ASSERT(EXPRESSION, EXCEPTION_ACTIONS, PARENT) \
     if(!EXPRESSION) { \
         QMessageBox::critical(PARENT, "Вызвано исключение", \
                                  static_cast<QString>("Вызвано исключение!\nНе удовлетворено условие: ")+#EXPRESSION+\
@@ -13,7 +13,7 @@
 struct ErrorMessages {
     static void errorNetwork(QWidget *parent, QString description) {
         QMessageBox::critical(parent, "Проблемы с подключением к Интернету",
-                                 static_cast<QString>("Не удалось подключиться к серверу. Проверьте подключение к Интернету и повторитк попытку.\nОшибка: "+description));
+                                 static_cast<QString>("Не удалось подключиться к серверу. Проверьте подключение к Интернету и повторите попытку.\nОшибка: "+description));
     }
     static void errorVkApi(QWidget *parent, int errorCode, QString description) {
         QMessageBox::warning(parent, "Ошибка VK API",

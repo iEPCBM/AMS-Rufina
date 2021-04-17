@@ -66,7 +66,7 @@ private:
     QString m_decryptedToken;
     bool m_isEncryptedToken;
 
-    void  decryptToken();
+    bool  decryptToken();
 };
 
 #endif // DIALOGADDCHAT_H

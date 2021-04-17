@@ -14,43 +14,32 @@
    <string>Поиск доступных бесед</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="maximumSize">
-      <size>
-       <width>664</width>
-       <height>25</height>
-      </size>
+   <item row="1" column="0" colspan="4">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="maximum">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="invertedAppearance">
+      <bool>false</bool>
+     </property>
+     <property name="textDirection">
+      <enum>QProgressBar::TopToBottom</enum>
+     </property>
+     <property name="format">
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="btStartStopFind">
-     <property name="text">
-      <string>Начать поиск</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="3">
+   <item row="0" column="0" colspan="4">
     <widget class="QTableWidget" name="tableChats">
      <attribute name="horizontalHeaderCascadingSectionResizes">
       <bool>false</bool>
@@ -85,28 +74,46 @@
      </column>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="maximum">
-      <number>1</number>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btStartStopFind">
+     <property name="text">
+      <string>Начать поиск</string>
      </property>
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="maximumSize">
+      <size>
+       <width>664</width>
+       <height>25</height>
+      </size>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <property name="textDirection">
-      <enum>QProgressBar::TopToBottom</enum>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="format">
-      <string/>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="lbChatsNotFound">
+     <property name="text">
+      <string>Доступные беседы не найдены.</string>
      </property>
     </widget>
    </item>

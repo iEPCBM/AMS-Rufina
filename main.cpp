@@ -9,6 +9,6 @@ int main(int argc, char *argv[])
     a.setStyle("windows");
     MainWindow w;
     w.show();
-    R_ASSERT(false, nullptr, qDebug()<<"ERROR!");
+    R_ASSERT(false, qDebug()<<"ERROR!", nullptr);
     return a.exec();
 }
