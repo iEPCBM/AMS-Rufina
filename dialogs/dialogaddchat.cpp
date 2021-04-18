@@ -26,12 +26,6 @@ DialogAddChat::~DialogAddChat()
     delete ui;
 }
 
-void DialogAddChat::onChatGot(VkChat chat)
-{
-    qDebug()<<"got";
-    //m_listChats.append(chat);
-}
-
 void DialogAddChat::onAddChat(uint row, VkChat chat)
 {
     if (!chat.hasTitle()||!chat.hasOwner()) {
@@ -86,7 +80,6 @@ void DialogAddChat::findChats()
     VkUserHandler usrHandler(this, m_decryptedToken);
     while (m_isSearching) {
         if (!hasSavedChat(id)) {
-            connect(&chatHandler,SIGNAL(dataWasGot(VkChat)),this, SLOT(onChatGot(VkChat)));
             chatHandler.getConversationData(id);
             if (chatHandler.hasError()) {
                 stopSearching();

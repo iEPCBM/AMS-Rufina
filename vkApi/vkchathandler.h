@@ -31,9 +31,6 @@ public:
 signals:
     void dataWasGot(VkChat);
 
-public slots:
-    void getConversationFinished(QJsonDocument json_doc);
-
 private:
     QJsonDocument m_jsonResp;
     QString m_token;

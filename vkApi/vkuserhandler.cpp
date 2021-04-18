@@ -18,7 +18,6 @@ void VkUserHandler::sendRequest(uint32_t id)
 {
     QHash<QString, QString> query;
     query["user_ids"]=QString::number(id);
-    connect(&m_api,SIGNAL(requestFinished(QJsonDocument)),this,SLOT(onRequestFinished(QJsonDocument)));
     m_api.sendRequest("users.get", query);
     if (m_api.isError()) {
         m_vkError = m_api.getVkError();
@@ -48,7 +47,6 @@ void VkUserHandler::sendRequest(QList<uint32_t> ids)
         }
     }
     query["user_ids"]=strIds;
-    connect(&m_api,SIGNAL(requestFinished(QJsonDocument)),this,SLOT(onRequestFinished(QJsonDocument)));
 
     m_api.sendRequest("users.get", query);
     qDebug()<<m_api.getResponse();
@@ -58,12 +56,6 @@ void VkUserHandler::sendRequest(QList<uint32_t> ids)
         qDebug()<<val.isObject();
         m_vecUsers.push_back(VkUser(obj));
     }
-}
-
-void VkUserHandler::onRequestFinished(QJsonDocument json_doc)
-{
-    //emit requestFinished(vecUsers);
-    qDebug()<<"Users request done!";
 }
 
 QList<VkUser> VkUserHandler::getUsers() const

@@ -25,7 +25,6 @@ void VkChatHandler::getConversationData(uint32_t id)
     m_chat.setId(id);
     QHash<QString, QString> query;
     query["peer_ids"]=QString::number(VK_API_MULTICHAT_BASE_ID+id);
-    connect(&api,SIGNAL(requestFinished(QJsonDocument)),this,SLOT(getConversationFinished(QJsonDocument)));
     api.sendRequest("messages.getConversationsById", query);
     qDebug()<<api.getJsonResponse().toJson();
     m_jsonResp = api.getJsonResponse();
@@ -58,11 +57,6 @@ void VkChatHandler::responseChatParse()
             m_isValid = true;
         }
     }
-}
-
-void VkChatHandler::getConversationFinished(QJsonDocument json_doc)
-{
-    qDebug()<<"Finished";
 }
 
 VkChat VkChatHandler::getChat() const

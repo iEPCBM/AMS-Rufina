@@ -11,7 +11,6 @@ CONFIG += c++11
 SOURCES += \
     dialogs/dialogedittoken.cpp \
     aesfacade.cpp \
-    afterauthstrategy.cpp \
     dialogs/dialogaddchat.cpp \
     dialogs/dialogchatslist.cpp \
     dialogs/dialogcreatepassword.cpp \
@@ -21,13 +20,11 @@ SOURCES += \
     dialogs/dialoglicenseview.cpp \
     dialogs/dialogsettings.cpp \
     dialogs/dialogtoken.cpp \
-    floor.cpp \
     main.cpp \
     mainwindow.cpp \
     messageassembler.cpp \
     settings.cpp \
-    showtokenstrategy.cpp \
-    third_party/AES.cpp \
+    third_party/AES/AES.cpp \
     vkApi/vkapi.cpp \
     vkApi/vkchat.cpp \
     vkApi/vkerror.cpp \
@@ -41,7 +38,6 @@ HEADERS += \
     AppInfo.h \
     Dialogs/dialogedittoken.h \
     aesfacade.h \
-    afterauthstrategy.h \
     dialogs/dialogaddchat.h \
     dialogs/dialogchatslist.h \
     dialogs/dialogcreatepassword.h \
@@ -51,12 +47,10 @@ HEADERS += \
     dialogs/dialoglicenseview.h \
     dialogs/dialogsettings.h \
     dialogs/dialogtoken.h \
-    floor.h \
     mainwindow.h \
     messageassembler.h \
     settings.h \
-    showtokenstrategy.h \
-    third_party/AES.h \
+    third_party/AES/AES.h \
     third_party/CompileTime/CompileTime.h \
     vkApi/AbstractMethod.h \
     vkApi/vkapi.h \

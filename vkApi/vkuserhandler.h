@@ -23,9 +23,6 @@ public:
 
     QList<VkUser> getUsers() const;
 
-public slots:
-    void onRequestFinished(QJsonDocument json_doc);
-
 signals:
     void requestFinished(QVector<VkUser*>);
 

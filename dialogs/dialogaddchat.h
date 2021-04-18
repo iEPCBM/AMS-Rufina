@@ -31,7 +31,6 @@ public:
     void setAddedChats(const QHash<uint8_t, VkChat> &addedChats);
 
 public slots:
-    void onChatGot(VkChat chat);
     void onAddChat(uint row, VkChat chat);
 
 private slots:
