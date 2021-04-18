@@ -8,7 +8,6 @@ DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    qDebug()<<"Well";
     ui->tableChats->resizeColumnsToContents();
     ui->tableChats->setFocusPolicy(Qt::NoFocus);
 
@@ -263,10 +262,8 @@ QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)
     foreach (int id, usrIds) {
         if (isUserId(id)) {
             retList.append(id);
-            qDebug()<<"Admin "<<id;
         }
     }
-    qDebug()<<retList;
     return retList;
 }
 
@@ -289,7 +286,7 @@ bool DialogAddChat::decryptToken()
 {
     if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
         DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_encryptedToken.toUtf8()), this);
-        int resultDlg = dlgPasswEnter.exec();
+        dlgPasswEnter.exec();
         if (dlgPasswEnter.isSuccessful()) {
             m_decryptedToken = QString::fromUtf8(dlgPasswEnter.getDecryptedData());
         } else {

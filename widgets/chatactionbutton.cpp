@@ -6,11 +6,6 @@ ChatActionButton::ChatActionButton(QString text, VkChat chat, QWidget *parent):Q
     connect(this, SIGNAL(clicked()), this, SLOT(doChatAction()));
 }
 
-ChatActionButton::~ChatActionButton()
-{
-    m_chat = NULL;
-}
-
 VkChat ChatActionButton::chat() const
 {
     return m_chat;

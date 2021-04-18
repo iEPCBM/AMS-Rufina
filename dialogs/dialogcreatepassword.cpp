@@ -21,11 +21,13 @@ DialogCreatePassword::~DialogCreatePassword()
 
 void DialogCreatePassword::on_lePasswordConfirm_textEdited(const QString &arg1)
 {
+    Q_UNUSED(arg1)
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(checkPassword());
     ui->lbIsPswdEqual->setText(checkPassword()?"":"Пароли не совпадают");
 }
 void DialogCreatePassword::on_lePassword_textEdited(const QString &arg1)
 {
+    Q_UNUSED(arg1)
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(checkPassword());
     ui->lbIsPswdEqual->setText(checkPassword()?"":"Пароли не совпадают");
 }

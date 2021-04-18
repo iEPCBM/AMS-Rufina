@@ -46,9 +46,7 @@ void DialogChatConfirmation::generateCode()
             +QString::number(VK_API_MULTICHAT_BASE_ID+m_chat.getId())
             +QString::number(randGen->generate())
             +CRC_SALT;
-    qDebug()<<m_data2hash;
     QByteArray crcHash = crc32b(m_data2hash.toUtf8()).toHex();
-    qDebug()<<crcHash;
     m_pubKey = randGen->bounded(1000);
     ui->lbPubKey->setText(QString::number(m_pubKey));
     m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat.getId(),

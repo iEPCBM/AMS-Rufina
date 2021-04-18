@@ -2,7 +2,6 @@
 #define DIALOGCHATCONFIRMATION_H
 
 #include <QDialog>
-#include <QDebug>
 #include <QTime>
 #include <QDate>
 #include <QTimer>

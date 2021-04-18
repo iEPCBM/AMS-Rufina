@@ -26,7 +26,6 @@ void VkChatHandler::getConversationData(uint32_t id)
     QHash<QString, QString> query;
     query["peer_ids"]=QString::number(VK_API_MULTICHAT_BASE_ID+id);
     api.sendRequest("messages.getConversationsById", query);
-    qDebug()<<api.getJsonResponse().toJson();
     m_jsonResp = api.getJsonResponse();
     responseChatParse();
 }

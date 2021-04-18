@@ -47,9 +47,7 @@ private slots:
 
     void on_actionLicenseText_triggered();
 
-public slots:
-    void VkApiRequestFinished(QJsonDocument r);
-    void onSettingsUpdated(Settings *settings);
+public slots:    void onSettingsUpdated(Settings *settings);
 
 private:
     Ui::MainWindow *ui;

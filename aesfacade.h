@@ -7,7 +7,6 @@
 #include <QCryptographicHash>
 #include <QList>
 #include <QByteArray>
-#include <QDebug>
 
 #define AES_KEY_LEN 0x100
 #define IV_MEM      0xFF

@@ -9,4 +9,7 @@
     <qresource prefix="/langs">
         <file alias="qtbase_ru.qm">assets/translations/third_party/qtbase_ru.qm</file>
     </qresource>
+    <qresource prefix="/misc" lang="RUFINA.DAT">
+        <file>assets/misc/RUFINA.DAT</file>
+    </qresource>
 </RCC>

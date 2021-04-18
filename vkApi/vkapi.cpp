@@ -20,8 +20,6 @@ void VkApi::sendRequest(QString method, QHash<QString, QString> args)
     QString query = assemblyQuery(args);
     QString strUrl = VK_API_ENDPOINT+method+query;
 
-    qDebug() << strUrl;
-
     netMngr = new QNetworkAccessManager(this);
 
     connect(netMngr, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
@@ -60,7 +58,6 @@ int32_t VkApi::getRandomId(QString strMsg, int peerId)
     int32_t val = hash.at(peerId%0x20)-peerId/(strMsg.length()*hash.at(strMsg.length()%0x20));
     int8_t factor = hash.at(peerId%0x20)%2==0?-1:1;
     val += factor*peerId/(strMsg.length()*hash.at(strMsg.length()%0x20));
-    qDebug()<<val;
     return val;
 }
 

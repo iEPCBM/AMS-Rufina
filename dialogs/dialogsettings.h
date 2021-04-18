@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QTextCodec>
-#include <QDebug>
 #include <QFileDialog>
 #include "dialogs/dialogchatslist.h"
 #include "dialogs/dialogpasswordenter.h"

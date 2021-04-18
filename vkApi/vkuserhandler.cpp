@@ -26,10 +26,8 @@ void VkUserHandler::sendRequest(uint32_t id)
     QJsonArray arrResp = m_api.getJsonResponse().object().value("response").toArray();
     foreach(const QJsonValue &val, arrResp) {
         QJsonObject obj = val.toObject();
-        qDebug()<<val.isObject();
         m_vecUsers.push_back(VkUser(obj));
     }
-    qDebug()<<m_vecUsers.length();
 }
 
 void VkUserHandler::sendRequest(QList<uint32_t> ids)
@@ -49,11 +47,9 @@ void VkUserHandler::sendRequest(QList<uint32_t> ids)
     query["user_ids"]=strIds;
 
     m_api.sendRequest("users.get", query);
-    qDebug()<<m_api.getResponse();
     QJsonArray arrResp = m_api.getJsonResponse().object().value("response").toArray();
     foreach(const QJsonValue &val, arrResp) {
         QJsonObject obj = val.toObject();
-        qDebug()<<val.isObject();
         m_vecUsers.push_back(VkUser(obj));
     }
 }

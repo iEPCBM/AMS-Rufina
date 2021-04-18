@@ -28,7 +28,6 @@ bool AESFacade::decryption(QString strPassword)
     //stage 2
     QByteArray hashOfData = QCryptographicHash::hash(
                 m_arrDecryData, QCryptographicHash::Sha256).toHex();
-    qDebug()<<hashOfData;
     if (m_arrCheckHash != hashOfData) {
         m_strErr = STR_ERR_IVALID_PASSWORD;
         return false;
@@ -74,9 +73,4 @@ QByteArray AESFacade::getDecryptedData() const
 QString AESFacade::getStrErr() const
 {
     return m_strErr;
-}
-
-void AESFacade::clear()
-{
-    //TODO: clear algorythm
 }

@@ -139,23 +139,20 @@ void MainWindow::on_ptxtedMessageText_textChanged()
 
 void MainWindow::on_chkAddAttentionStr_stateChanged(int arg1)
 {
+    Q_UNUSED(arg1)
     updateMsgPreview();
 }
 
 void MainWindow::on_chkPingAll_stateChanged(int arg1)
 {
+    Q_UNUSED(arg1)
     updateMsgPreview();
 }
 
 void MainWindow::on_chkAddSignature_stateChanged(int arg1)
 {
+    Q_UNUSED(arg1)
     updateMsgPreview();
-}
-
-void MainWindow::VkApiRequestFinished(QJsonDocument r)
-{
-    qDebug()<<"F!";
-    qDebug()<<r.toJson();
 }
 
 void MainWindow::onSettingsUpdated(Settings *settings)

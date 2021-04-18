@@ -10,7 +10,6 @@ class ChatActionButton : public QPushButton
     Q_OBJECT
 public:
     explicit ChatActionButton(QString text, VkChat chat, QWidget *parent = nullptr);
-    ~ChatActionButton();
 
     VkChat chat() const;
     void setChat(VkChat chat);

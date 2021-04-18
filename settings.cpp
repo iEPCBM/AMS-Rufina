@@ -1,5 +1,4 @@
 #include "settings.h"
-#include <QDebug>
 
 Settings::Settings(QString strPath)
 {
@@ -10,7 +9,6 @@ void Settings::exportConf(QString strPath)
 {
     QFile *file = new QFile(strPath);
     if (!file->open(QIODevice::WriteOnly)) {
-        qDebug()<<"err_parse";
         ErrorMessages::errorFileAccess(nullptr, strPath);
         return;
     }
@@ -22,7 +20,6 @@ void Settings::importConf(QString strPath)
 {
     QFile *file = new QFile(strPath);
     if (!file->open(QIODevice::ReadOnly)) {
-        qDebug()<<"err_parse";
         ErrorMessages::errorFileAccess(nullptr, strPath);
         return;
     }
@@ -152,7 +149,6 @@ bool Settings::readConf(QFile *file)
     while (!xml.atEnd() && !xml.hasError()) {
         QXmlStreamReader::TokenType token = xml.readNext();
         attributes = xml.attributes();
-        //qDebug()<<xml.name();
         if (token==QXmlStreamReader::StartDocument)
             continue;
         else if (token == QXmlStreamReader::StartElement) {
@@ -182,7 +178,6 @@ bool Settings::readConf(QFile *file)
                     {
                         if (xml.name()==ENCRY_TAG) {
                             if(attributes.hasAttribute(VALUE_ATTR)) {
-                                qDebug()<<attributes.value(VALUE_ATTR);
                                 m_isEncrypted = attributes.value(VALUE_ATTR).toInt()?true:false;
                             } else {
                                 m_isEncrypted = false;
@@ -224,7 +219,6 @@ bool Settings::readConf(QFile *file)
                                             //TODO: Warning box
                                         }
                                         m_chats[floorN]=chat;
-                                        qDebug()<<floorN<<" "<<chat.getTitle();
                                     }
                                 }
                                 xml.readNext();
