@@ -39,7 +39,7 @@ void Settings::extract()
 
 Settings* Settings::getInstance()
 {
-    Settings* ptr_stg = new Settings("D:\\Projects\\Programs\\CPP\\QT\\VK_ChatsMessageDelivery\\RUFINA\\RUFINA\\assets\\config.xml");
+    Settings* ptr_stg = new Settings("./assets/config.xml");
     ptr_stg->extract();
     return ptr_stg;
 }

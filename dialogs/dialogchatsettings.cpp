@@ -21,6 +21,8 @@ DialogChatSettings::DialogChatSettings(uint8_t floor, VkChat chat, QWidget *pare
     ui(new Ui::DialogChatSettings)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     m_chat = chat;
     ui->leChatId->setText(QString::number(m_chat.getId()));
     if (m_chat.hasTitle()) {

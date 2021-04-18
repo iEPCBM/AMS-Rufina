@@ -46,7 +46,7 @@ void VkError::clear()
 
 void VkError::fillErrorMsgList()
 {
-    QFile fileList("D:\\Projects\\Programs\\CPP\\QT\\VK_ChatsMessageDelivery\\RUFINA\\RUFINA\\assets\\errlist.cfg");
+    QFile fileList("./assets/errlist.cfg");
     if (!fileList.open(QFile::ReadOnly)) {
         ErrorMessages::errorFileAccess(nullptr, fileList.fileName());
         return;
