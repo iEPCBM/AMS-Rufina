@@ -33,15 +33,9 @@ DialogChatSettings::~DialogChatSettings()
     delete ui;
 }
 
-void DialogChatSettings::on_buttonBox_accepted()
-{
-    m_chat.setTitle(ui->leChatTitle->text());
-    m_floor = static_cast<uint8_t>(ui->spinFloor->value());
-}
-
 bool DialogChatSettings::hasChatConflict()
 {
-    return m_savedChats.contains(ui->spinFloor->value()); // &m_savedChats[floor].hasTitle()
+    return m_savedChats.contains(m_floor); // &m_savedChats[floor].hasTitle()
 }
 
 VkChat DialogChatSettings::chat() const
@@ -51,6 +45,8 @@ VkChat DialogChatSettings::chat() const
 
 void DialogChatSettings::accept()
 {
+    m_chat.setTitle(ui->leChatTitle->text());
+    m_floor = static_cast<uint8_t>(ui->spinFloor->value());
     if (ui->leChatTitle->text().isEmpty()) {
        QMessageBox::warning(this, "Название беседы пустое", "Название беседы не может быть пустым. Введите название в соответствующее поле.");
        return;

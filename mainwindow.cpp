@@ -76,7 +76,7 @@ void MainWindow::on_btSend_clicked()
     }
 
     VkMessageDelivery msgDelivery(token, this);
-    QHash<uint8_t, bool> isSentMsg;
+    QHash<uint8_t, bool> isSentMsgList;
     QProgressDialog dlgSending("Отправка сообщения", "Отмена", 0, checkedFloors.length(), this);
     dlgSending.setWindowModality(Qt::WindowModal);
     dlgSending.show();
@@ -87,24 +87,27 @@ void MainWindow::on_btSend_clicked()
         if(msgDelivery.hasError()) {
             VkError vkErr = msgDelivery.getVkError();
             if (vkErr.hasError()) {
-                ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description()+
+                QMessageBox::StandardButton resultMsgBox = ErrorMessages::errorVkApi(this, vkErr.code(), vkErr.description()+
                                           "\nОшибка возникла при отправке сообщения в беседу: \""+
                                           m_settings->getChats()[floor].getTitle()+
-                                          "\" (ID: "+QString::number(m_settings->getChats()[floor].getId())+").");
+                                          "\" (ID: "+QString::number(m_settings->getChats()[floor].getId())+").", QMessageBox::Ok|QMessageBox::Abort);
+                if (resultMsgBox == QMessageBox::Abort) {
+                    dlgSending.cancel();
+                }
             } else {
                 dlgSending.cancel();
             }
-            isSentMsg[floor]=false;
+            isSentMsgList[floor]=false;
         }
         else {
-            isSentMsg[floor]=true;
+            isSentMsgList[floor]=true;
         }
         if (dlgSending.wasCanceled())
             break;
         dlgSending.setValue(++progress);
     }
     dlgSending.setValue(checkedFloors.length());
-    afterSentMessage(isSentMsg);
+    afterSentMessage(isSentMsgList);
 }
 
 void MainWindow::updateMsgPreview()

@@ -19,6 +19,10 @@ struct ErrorMessages {
         QMessageBox::warning(parent, "Ошибка VK API",
                                  static_cast<QString>("VK API вернул ошибку.\nКод ошибки: ")+QString::number(errorCode)+"\nОписание ошибки: "+description);
     }
+    static QMessageBox::StandardButton errorVkApi(QWidget *parent, int errorCode, QString description, QMessageBox::StandardButtons btns) {
+        return QMessageBox::warning(parent, "Ошибка VK API",
+                                 static_cast<QString>("VK API вернул ошибку.\nКод ошибки: ")+QString::number(errorCode)+"\nОписание ошибки: "+description, btns);
+    }
     static void errorFileAccess(QWidget *parent, QString filePath) {
         QMessageBox::critical(parent, "Ошибка доступа к файлу",
                                  static_cast<QString>("Ошибка доступа к файлу: ")+filePath);

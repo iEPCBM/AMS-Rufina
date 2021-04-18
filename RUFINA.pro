@@ -83,9 +83,6 @@ FORMS += \
     dialogs/dialogtoken.ui \
     mainwindow.ui
 
-TRANSLATIONS += \
-    RUFINA_ru_RU.ts
-
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -94,6 +91,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources.qrc
 
+LANGUAGES = ru
 
 TEMPLATE = app
 win32 {

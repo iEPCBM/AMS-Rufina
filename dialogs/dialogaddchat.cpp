@@ -50,8 +50,7 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
     if (resultDlg == QDialog::Accepted) {
         chat = dlgChatStg.chat();
         uint8_t floor = dlgChatStg.floor();
-        //addChatToTable();
-        if (hasFloorConflict(floor)) {
+        if (m_savedChats.contains(floor)) {
             int32_t oldRow = findRowByChatId(m_savedChats[floor].getId());
             if (oldRow >= 0) {
                 setChatAddedState(oldRow, false);
@@ -257,11 +256,6 @@ bool DialogAddChat::hasSavedChat(uint chatId)
         }
     }
     return false;
-}
-
-bool DialogAddChat::hasFloorConflict(uint8_t floor)
-{
-    return m_savedChats.contains(floor); // &m_savedChats[floor].hasTitle()
 }
 
 QList<uint32_t> DialogAddChat::filterUserIds(QList<int> usrIds)

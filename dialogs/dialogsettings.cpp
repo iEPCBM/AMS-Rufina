@@ -143,13 +143,15 @@ void DialogSettings::on_btEditToken_clicked()
 void DialogSettings::on_btExportSettings_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this, "Экспорт настроек", QDir::homePath(), "Файл настроек (*.xml);;Все файлы (*.*)");
-    settingsHandler->exportConf(filePath);
+    if (!filePath.isEmpty())
+        settingsHandler->exportConf(filePath);
 }
 
 void DialogSettings::on_btImportSettings_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "Импорт настроек", QDir::homePath(), "Файл настроек (*.xml);;Все файлы (*.*)");
-    settingsHandler->importConf(filePath);
+    if (!filePath.isEmpty())
+        settingsHandler->importConf(filePath);
     update();
 }
 

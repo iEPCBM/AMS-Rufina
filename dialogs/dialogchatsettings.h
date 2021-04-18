@@ -24,8 +24,6 @@ public:
     VkChat chat() const;
 
 private slots:
-    void on_buttonBox_accepted();
-
     void on_spinFloor_valueChanged(int arg1);
 
     void on_leChatTitle_textChanged(const QString &arg1);

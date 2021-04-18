@@ -1,3 +1,5 @@
 <RCC>
-    <qresource prefix="/new/icons"/>
+    <qresource prefix="/langs/third_party" lang="ru">
+        <file>qtbase_ru.qm</file>
+    </qresource>
 </RCC>
