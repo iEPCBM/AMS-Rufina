@@ -9,7 +9,7 @@ DialogSettings::DialogSettings(QWidget *parent) :
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     settingsHandler = Settings::getInstance();
-    QPushButton *btApply = ui->buttonBoxAct->button (QDialogButtonBox::Apply);
+    QPushButton *btApply = ui->buttonBox->button (QDialogButtonBox::Apply);
     connect(btApply, SIGNAL(clicked()), this, SLOT(onApplied()));
     update();
 }
@@ -81,6 +81,7 @@ inline void DialogSettings::setEncryptedFlag(bool checked)
 void DialogSettings::on_buttonBox_accepted()
 {
     saveSettings();
+    this->accept();
 }
 
 void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
@@ -157,4 +158,9 @@ void DialogSettings::on_btImportSettings_clicked()
 void DialogSettings::onApplied()
 {
     saveSettings();
+}
+
+void DialogSettings::on_buttonBox_rejected()
+{
+    this->reject();
 }

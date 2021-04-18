@@ -51,6 +51,8 @@ private slots:
 
     void on_btImportSettings_clicked();
 
+    void on_buttonBox_rejected();
+
 private:
     Ui::DialogSettings *ui;
     Settings *settingsHandler;
