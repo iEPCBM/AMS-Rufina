@@ -6,6 +6,8 @@ DialogEditToken::DialogEditToken(QString token, QWidget *parent) :
     ui(new Ui::DialogEditToken)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     m_token = token;
     ui->pteToken->setPlainText(m_token);
 }

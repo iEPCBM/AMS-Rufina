@@ -6,6 +6,7 @@ DialogLicenseView::DialogLicenseView(QWidget *parent) :
     ui(new Ui::DialogLicenseView)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 DialogLicenseView::~DialogLicenseView()

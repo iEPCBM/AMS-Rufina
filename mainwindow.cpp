@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionSettings_triggered()
 {
-    DialogSettings dSettings(m_settings, this);
+    DialogSettings dSettings(this);
     connect(&dSettings, SIGNAL(saved(Settings*)), this, SLOT(onSettingsUpdated(Settings*)));
     dSettings.exec();
 }
@@ -123,6 +123,11 @@ void MainWindow::update()
         bool isContains = m_settings->getChats().contains(floor);
         m_chBoxFloorMap[floor]->setEnabled(isContains);
         m_chBoxFloorMap[floor]->setChecked(m_chBoxFloorMap[floor]->isChecked()&isContains);
+        if (isContains) {
+            m_chBoxFloorMap[floor]->setToolTip(m_settings->getChats()[floor].getTitle());
+        } else {
+            m_chBoxFloorMap[floor]->setToolTip("");
+        }
     }
     updateMsgPreview();
 }

@@ -7,6 +7,8 @@ DialogCreatePassword::DialogCreatePassword(QByteArray data, QWidget *parent) :
     m_aes(data)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->lbIsPswdEqual->setStyleSheet("color: red;");
     ui->lePassword->setFocus();

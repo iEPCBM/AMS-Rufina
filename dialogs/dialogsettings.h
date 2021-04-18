@@ -22,7 +22,7 @@ class DialogSettings : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogSettings(Settings *settings, QWidget *parent = nullptr);
+    explicit DialogSettings(QWidget *parent = nullptr);
     ~DialogSettings();
 
     void update();
@@ -39,7 +39,7 @@ private slots:
 
     void on_btShowToken_clicked();
 
-    void on_buttonBoxAct_accepted();
+    void on_buttonBox_accepted();
 
     void on_chbUseKeyCry_clicked(bool checked);
 
@@ -50,8 +50,6 @@ private slots:
     void on_btExportSettings_clicked();
 
     void on_btImportSettings_clicked();
-
-    void on_buttonBoxAct_rejected();
 
 private:
     Ui::DialogSettings *ui;

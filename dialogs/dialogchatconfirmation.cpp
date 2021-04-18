@@ -7,6 +7,7 @@ DialogChatConfirmation::DialogChatConfirmation(VkChat chat, QString token, QWidg
     m_msgDelivery(token, this)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->leCodeInput->setValidator(new QRegExpValidator(QRegExp("^[a-fA-F0-9]+$"), this));
     m_chat = chat;
     QTimer::singleShot(0, this, SLOT(onShowed())); //Hmmm. After
@@ -39,14 +40,20 @@ QByteArray DialogChatConfirmation::crc32b(QByteArray message)
 
 void DialogChatConfirmation::generateCode()
 {
+    QRandomGenerator *randGen = QRandomGenerator::global();
     m_data2hash = QDate::currentDate().toString(Qt::ISODate)+" "
             +QTime::currentTime().toString(Qt::ISODateWithMs)
             +QString::number(VK_API_MULTICHAT_BASE_ID+m_chat.getId())
+            +QString::number(randGen->generate())
             +CRC_SALT;
     qDebug()<<m_data2hash;
     QByteArray crcHash = crc32b(m_data2hash.toUtf8()).toHex();
     qDebug()<<crcHash;
-    m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat.getId(), STR_CONFIRMATION_PREAMBLE+QString::fromUtf8(crcHash));
+    m_pubKey = randGen->bounded(1000);
+    ui->lbPubKey->setText(QString::number(m_pubKey));
+    m_msgDelivery.sendMessage(VK_API_MULTICHAT_BASE_ID+m_chat.getId(),
+                              QString(STR_CONFIRMATION_PREAMBLE) + QString::fromUtf8(crcHash)
+                              +"\nСверочный код: " + QString::number(m_pubKey));
     if(m_msgDelivery.hasError()) {
         VkError vkErr = m_msgDelivery.getVkError();
         if (vkErr.hasError()) {

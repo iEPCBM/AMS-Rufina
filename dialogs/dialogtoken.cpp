@@ -6,6 +6,7 @@ DialogToken::DialogToken(QWidget *parent) :
     ui(new Ui::DialogToken)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 DialogToken::~DialogToken()

@@ -7,8 +7,10 @@ DialogChatsList::DialogChatsList(QHash<uint8_t, VkChat> chats, QString token, bo
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     setToken(token, isEncrypted);
     m_chats = chats;
+    ui->tableChats->setFocusPolicy(Qt::NoFocus);
     updateChatsTable();
 }
 
@@ -79,15 +81,9 @@ QHash<uint8_t, VkChat> DialogChatsList::getChats() const
     return m_chats;
 }
 
-void DialogChatsList::setChats(QHash<uint8_t, VkChat> chats)
-{
-
-}
-
 void DialogChatsList::updateChatsTable()
 {
     QList<uint8_t> keys = m_chats.keys();
-    std::sort(keys.begin(), keys.end());
 
     QTableWidget* table = ui->tableChats;
     table->setRowCount(0);
@@ -104,6 +100,12 @@ void DialogChatsList::updateChatsTable()
         btEditChat->setRow(lastRow);
         btDeleteChat->setFloor(floor);
         btDeleteChat->setRow(lastRow);
+        QIcon iconEdit;
+        iconEdit.addFile(QString::fromUtf8(":/icons/edit"), QSize(), QIcon::Normal, QIcon::Off);
+        btEditChat->setIcon(iconEdit);
+        QIcon iconDelete;
+        iconDelete.addFile(QString::fromUtf8(":/icons/delete"), QSize(), QIcon::Normal, QIcon::Off);
+        btDeleteChat->setIcon(iconDelete);
 
         QWidget *widgetWrapper = new QWidget();
         QHBoxLayout *layoutBt = new QHBoxLayout(widgetWrapper);
@@ -125,20 +127,29 @@ void DialogChatsList::updateChatsTable()
         ui->tableChats->resizeRowToContents(lastRow);
         ui->tableChats->resizeColumnsToContents();
     }
+    ui->tableChats->sortByColumn(2, Qt::AscendingOrder);
 }
 
 void DialogChatsList::updateChatsTableRow(uint row, uint8_t floor, VkChat chat)
 {
-    ui->tableChats->setItem
-            (row,
-             0,
-             new QTableWidgetItem(QString::number(chat.getId())));
-    ui->tableChats->setItem
-            (row,
-             1,
-             new QTableWidgetItem(chat.getTitle()));
-    ui->tableChats->setItem
-            (row,
-             2,
-             new QTableWidgetItem(QString::number(floor)));
+    QTableWidgetItem *cellItem = new QTableWidgetItem(QString::number(chat.getId()));
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
+    ui->tableChats->setItem (row, 0, cellItem);
+
+    cellItem = new QTableWidgetItem(chat.getTitle());
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
+    ui->tableChats->setItem  (row, 1, cellItem);
+
+    cellItem = new QTableWidgetItem(QString::number(floor));
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
+    ui->tableChats->setItem  (row, 2, cellItem);
+}
+
+void DialogChatsList::on_btnDeleteAllChats_clicked()
+{
+    QMessageBox::StandardButton btClicked = QMessageBox::question(this, "Удалить все беседы?", "Вы действительно хотите удалить все беседы из списка?");
+    if (btClicked == QMessageBox::Yes) {
+        m_chats.clear();
+        updateChatsTable();
+    }
 }

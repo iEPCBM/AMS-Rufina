@@ -6,8 +6,12 @@ DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
     ui(new Ui::DialogAddChat)
 {
     ui->setupUi(this);
+    this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     qDebug()<<"Well";
     ui->tableChats->resizeColumnsToContents();
+    ui->tableChats->setFocusPolicy(Qt::NoFocus);
+
     ui->lbChatsNotFound->setVisible(false);
     m_isEncryptedToken = isEncrypted;
     if (m_isEncryptedToken) {
@@ -32,11 +36,8 @@ void DialogAddChat::onAddChat(uint row, VkChat chat)
 {
     if (!chat.hasTitle()||!chat.hasOwner()) {
         QMessageBox::StandardButtons btClicked = QMessageBox::warning(this, "Предупреждение",
-                             "Информация о данной беседе недостаточна. Вероятно, это вызвано отсутствием флага администратора у бота или же тем, что бота исключили из беседы. Если бот состоит в беседе, то для того, чтобы добавить эту беседу в систему, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
+                             "Информации о данной беседе недостаточно. Вероятно, это вызвано отсутствием флага администратора у бота или же тем, что бота исключили из беседы. Если бот состоит в беседе, то для того, чтобы добавить эту беседу в систему, необходимо ее подтвердить.", QMessageBox::Ok|QMessageBox::Cancel);
         if (btClicked==QMessageBox::Ok) {
-            if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
-
-            }
             DialogChatConfirmation dlgConfirmation(chat, m_decryptedToken, this);
             dlgConfirmation.exec();
             if (!dlgConfirmation.isConfirmated()) {
@@ -136,21 +137,19 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
 {
     ui->tableChats->insertRow (ui->tableChats->rowCount());
     int lastRow = ui->tableChats->rowCount()-1;
-    ui->tableChats->setItem
-            (lastRow,
-             0,
-             new QTableWidgetItem(QString::number(chat.getId())));
+
+    QTableWidgetItem *cellItem = new QTableWidgetItem(QString::number(chat.getId()));
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
+    ui->tableChats->setItem (lastRow, 0, cellItem);
+
     if (chat.hasTitle()) {
-        ui->tableChats->setItem
-                (lastRow,
-                 1,
-                 new QTableWidgetItem(chat.getTitle()));
+        cellItem = new QTableWidgetItem(chat.getTitle());
     } else {
-        ui->tableChats->setItem
-                (lastRow,
-                 1,
-                 new QTableWidgetItem(STR_UNKNOWN));
+        cellItem = new QTableWidgetItem(STR_UNKNOWN);
     }
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
+    ui->tableChats->setItem (lastRow, 1, cellItem);
+
     QString strAdmList = "";
     if (chat.hasOwner()) {
         strAdmList = "<p><a href=\"https://vk.com/id"+QString::number(owner.getId())+"\">" +owner.getAssembledName().trimmed() + "</a> " +
@@ -177,6 +176,10 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
 
     ChatActionButton *btAddChat = new ChatActionButton("Добавить", m_listDetectedChats[actionId], ui->tableChats);
     btAddChat->setRow(lastRow);
+    QIcon iconAdd;
+    iconAdd.addFile(QString::fromUtf8(":/icons/add"), QSize(), QIcon::Normal, QIcon::Off);
+    btAddChat->setIcon(iconAdd);
+
     QWidget *widgetWrapper = new QWidget();
     QVBoxLayout *layoutBt = new QVBoxLayout(widgetWrapper);
     QSpacerItem *vertSpacerHeader = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -194,10 +197,12 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
 
     connect(btAddChat, SIGNAL(cabtClicked(uint, VkChat)), this, SLOT(onAddChat(uint, VkChat)));
 
+    cellItem = new QTableWidgetItem("");
+    cellItem->setFlags(cellItem->flags()^Qt::ItemIsEditable);
     ui->tableChats->setItem(
              lastRow,
              4,
-             new QTableWidgetItem(""));
+             cellItem);
 
     lbAdmins         = NULL;
     btAddChat        = NULL;
@@ -205,6 +210,7 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     layoutBt         = NULL;
     vertSpacerHeader = NULL;
     vertSpacerFooter = NULL;
+    cellItem         = NULL;
 }
 
 int32_t DialogAddChat::findRowByChatId(uint chatId)

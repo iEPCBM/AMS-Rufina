@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QRegExpValidator>
 #include <QMessageBox>
+#include <QRandomGenerator>
 #include "vkApi/vkchat.h"
 #include "vkApi/vkmessagedelivery.h"
 #include "rassert.h"
@@ -42,6 +43,7 @@ private:
     VkChat m_chat;
     VkMessageDelivery m_msgDelivery;
     QString m_data2hash;
+    uint32_t m_pubKey;
     void generateCode();
     bool m_isConfirmated = false;
 };

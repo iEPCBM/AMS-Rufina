@@ -1,5 +1,12 @@
 <RCC>
-    <qresource prefix="/langs/third_party" lang="ru">
-        <file>qtbase_ru.qm</file>
+    <qresource prefix="/icons">
+        <file alias="add">assets/icons/UI/third_party/Tango/add.png</file>
+        <file alias="delete">assets/icons/UI/third_party/Tango/delete.png</file>
+        <file alias="edit">assets/icons/UI/third_party/Tango/edit.png</file>
+        <file alias="exit">assets/icons/UI/third_party/Tango/exit.png</file>
+        <file alias="settings">assets/icons/UI/third_party/Tango/settings.png</file>
+    </qresource>
+    <qresource prefix="/langs">
+        <file alias="qtbase_ru.qm">assets/translations/third_party/qtbase_ru.qm</file>
     </qresource>
 </RCC>

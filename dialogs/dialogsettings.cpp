@@ -1,14 +1,14 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-DialogSettings::DialogSettings(Settings *settings, QWidget *parent) :
+DialogSettings::DialogSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettings)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    settingsHandler = settings;
+    settingsHandler = Settings::getInstance();
     QPushButton *btApply = ui->buttonBoxAct->button (QDialogButtonBox::Apply);
     connect(btApply, SIGNAL(clicked()), this, SLOT(onApplied()));
     update();
@@ -78,10 +78,9 @@ inline void DialogSettings::setEncryptedFlag(bool checked)
     ui->btEditKey->setEnabled(checked);
 }
 
-void DialogSettings::on_buttonBoxAct_accepted()
+void DialogSettings::on_buttonBox_accepted()
 {
     saveSettings();
-    this->accept();
 }
 
 void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
@@ -158,9 +157,4 @@ void DialogSettings::on_btImportSettings_clicked()
 void DialogSettings::onApplied()
 {
     saveSettings();
-}
-
-void DialogSettings::on_buttonBoxAct_rejected()
-{
-    this->reject();
 }

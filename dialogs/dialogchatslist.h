@@ -2,10 +2,10 @@
 #define DIALOGCHATSLIST_H
 
 #include <QDialog>
+#include <QHash>
 #include "dialogs/dialogaddchat.h"
 #include "dialogs/dialogchatsettings.h"
 #include "vkApi/vkchat.h"
-#include <QHash>
 
 namespace Ui {
 class DialogChatsList;
@@ -28,13 +28,14 @@ private slots:
     void onEditChat(uint8_t floor, VkChat chat);
     void onDeleteChat(uint8_t floor, VkChat chat);
 
+    void on_btnDeleteAllChats_clicked();
+
 private:
     Ui::DialogChatsList *ui;
     QString m_token;
     bool m_isEncrypted;
     QHash<uint8_t, VkChat> m_chats;
 
-    void setChats(QHash<uint8_t, VkChat> chats);
     void updateChatsTable();
     void updateChatsTableRow(uint row, uint8_t floor, VkChat chat);
 };
