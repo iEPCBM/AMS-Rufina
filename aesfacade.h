@@ -1,7 +1,7 @@
 #ifndef AESFACADE_H
 #define AESFACADE_H
 
-#include "third_party/AES.h"
+#include "third_party/AES/AES.h"
 #include <QString>
 #include <QByteArray>
 #include <QCryptographicHash>
