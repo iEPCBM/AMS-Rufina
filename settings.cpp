@@ -39,7 +39,7 @@ void Settings::extract()
 
 Settings* Settings::getInstance()
 {
-    Settings* ptr_stg = new Settings("./assets/config.xml");
+    Settings* ptr_stg = new Settings(FILEPATH_CONFIGS);
     ptr_stg->extract();
     return ptr_stg;
 }

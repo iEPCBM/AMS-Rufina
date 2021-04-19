@@ -101,10 +101,10 @@ void DialogChatsList::updateChatsTable()
         btDeleteChat->setFloor(floor);
         btDeleteChat->setRow(lastRow);
         QIcon iconEdit;
-        iconEdit.addFile(QString::fromUtf8(":/icons/edit"), QSize(), QIcon::Normal, QIcon::Off);
+        iconEdit.addFile(QString::fromUtf8(FILEPATH_ICON_EDIT), QSize(), QIcon::Normal, QIcon::Off);
         btEditChat->setIcon(iconEdit);
         QIcon iconDelete;
-        iconDelete.addFile(QString::fromUtf8(":/icons/delete"), QSize(), QIcon::Normal, QIcon::Off);
+        iconDelete.addFile(QString::fromUtf8(FILEPATH_ICON_ADD), QSize(), QIcon::Normal, QIcon::Off);
         btDeleteChat->setIcon(iconDelete);
 
         QWidget *widgetWrapper = new QWidget();

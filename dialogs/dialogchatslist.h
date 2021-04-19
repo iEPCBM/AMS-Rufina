@@ -6,6 +6,7 @@
 #include "dialogs/dialogaddchat.h"
 #include "dialogs/dialogchatsettings.h"
 #include "vkApi/vkchat.h"
+#include "filepaths.h"
 
 namespace Ui {
 class DialogChatsList;

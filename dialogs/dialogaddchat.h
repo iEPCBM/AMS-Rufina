@@ -12,6 +12,7 @@
 #include "dialogs/dialogchatsettings.h"
 #include "dialogs/dialogpasswordenter.h"
 #include "settings.h"
+#include "filepaths.h"
 
 #define STR_OWNER_MARKER "(создатель)"
 

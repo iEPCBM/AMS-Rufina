@@ -19,7 +19,7 @@ DialogEditToken::~DialogEditToken()
 
 void DialogEditToken::on_buttonBox_accepted()
 {
-    m_token = ui->pteToken->toPlainText();
+    m_token = ui->pteToken->toPlainText().trimmed();
 }
 
 QString DialogEditToken::token() const

@@ -1,11 +1,11 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "vkApi/vkchat.h"
 #include <QXmlStreamReader>
 #include <QFile>
+#include "vkApi/vkchat.h"
 #include "rassert.h"
-
+#include "filepaths.h"
 
 #define CONFIG_WRAPPER_TAG "config"
 #define SEQURE_WRAPPER_TAG "secure"

@@ -169,7 +169,7 @@ void DialogAddChat::addChatToTable(VkChat chat, VkUser owner, QList<VkUser> admi
     ChatActionButton *btAddChat = new ChatActionButton("Добавить", m_listDetectedChats[actionId], ui->tableChats);
     btAddChat->setRow(lastRow);
     QIcon iconAdd;
-    iconAdd.addFile(QString::fromUtf8(":/icons/add"), QSize(), QIcon::Normal, QIcon::Off);
+    iconAdd.addFile(QString::fromUtf8(FILEPATH_ICON_ADD), QSize(), QIcon::Normal, QIcon::Off);
     btAddChat->setIcon(iconAdd);
 
     QWidget *widgetWrapper = new QWidget();

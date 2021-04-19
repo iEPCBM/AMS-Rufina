@@ -25,7 +25,7 @@ void VkError::setCode(const int16_t &code)
 
 QString VkError::description() const
 {
-    return m_description + (m_errorMsgList.contains(m_code)?(" ("+m_errorMsgList[m_code].trimmed()+")"):"");
+    return m_description + (m_errorMsgList.contains(m_code)?(" ("+m_errorMsgList[m_code].trimmed()+")."):"");
 }
 
 void VkError::setDescription(const QString &description)
@@ -46,7 +46,7 @@ void VkError::clear()
 
 void VkError::fillErrorMsgList()
 {
-    QFile fileList("./assets/errlist.cfg");
+    QFile fileList(FILEPATH_VKAPI_ERR_LIST);
     if (!fileList.open(QFile::ReadOnly)) {
         ErrorMessages::errorFileAccess(nullptr, fileList.fileName());
         return;

@@ -5,7 +5,7 @@
 #include <QHash>
 #include <QFile>
 #include "rassert.h"
-#include <QTextStream>
+#include "filepaths.h"
 
 class VkError
 {
