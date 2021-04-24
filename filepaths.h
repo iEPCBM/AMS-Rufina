@@ -6,6 +6,8 @@
 
 #define FILEPATH_QTBASE_RU      ":/langs/qtbase_ru.qm"
 #define FILEPATH_VKAPI_ERR_LIST ":/phrases/errlist.cfg"
+#define PATH_LANGS_DIR          ":/langs/"
+
 
 #define FILEPATH_ICON_ADD      ":/icons/add"
 #define FILEPATH_ICON_DELETE   ":/icons/delete"

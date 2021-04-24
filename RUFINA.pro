@@ -47,6 +47,7 @@ HEADERS += \
     dialogs/dialoglicenseview.h \
     dialogs/dialogsettings.h \
     dialogs/dialogtoken.h \
+    filepaths.h \
     mainwindow.h \
     messageassembler.h \
     settings.h \
@@ -96,15 +97,15 @@ win32 {
     RC_ICONS = assets/icons/icon.ico
     RC_LANG = 0x0419
     RC_CODEPAGE = 1200
-    VERSION = 1.0.0.32
-    DEFINES += APP_VER_BUILD=32
+    VERSION = 1.0.1.63
+    DEFINES += APP_VER_BUILD=63
 }
 else {
-    VERSION = 1.0.0
+    VERSION = 1.0.1
 }
 VER_MAJ = 1
 VER_MIN = 0
-VER_PAT = 0
+VER_PAT = 1
 
 DEFINES += APP_VER_MAJ=$$VER_MAJ
 DEFINES += APP_VER_MIN=$$VER_MIN

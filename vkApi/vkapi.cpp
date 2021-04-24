@@ -55,9 +55,9 @@ int32_t VkApi::getRandomId(QString strMsg, int peerId)
 {
     R_ASSERT(!strMsg.isEmpty(), return -1, nullptr);
     QByteArray hash = QCryptographicHash::hash(strMsg.toUtf8(), QCryptographicHash::Sha256);
-    int32_t val = hash.at(peerId%0x20)-peerId/(strMsg.length()*hash.at(strMsg.length()%0x20));
+    int32_t val = static_cast<int32_t>(hash.at(strMsg.length()%0x20));
     int8_t factor = hash.at(peerId%0x20)%2==0?-1:1;
-    val += factor*peerId/(strMsg.length()*hash.at(strMsg.length()%0x20));
+    val += factor*peerId/(strMsg.length());
     return val;
 }
 

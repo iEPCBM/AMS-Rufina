@@ -12,7 +12,7 @@
 
 struct ErrorMessages {
     static void errorNetwork(QWidget *parent, QString description) {
-        QMessageBox::critical(parent, "Проблемы с подключением к Интернету",
+        QMessageBox::critical(parent, "Проблемы с подключением к серверу",
                                  static_cast<QString>("Не удалось подключиться к серверу. Проверьте подключение к Интернету и повторите попытку.\nОшибка: "+description));
     }
     static void errorVkApi(QWidget *parent, int errorCode, QString description) {

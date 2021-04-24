@@ -61,7 +61,7 @@ QByteArray AESFacade::encryption(QString strPassword)
 QByteArray AESFacade::getIV()
 {
     QByteArray retVal;
-    for (auto i=0; i<AES_KEY_LEN/8; i++) retVal.push_back(IV_MEM);
+    for (auto i=0; i<AES_KEY_LEN/0x08; i++) retVal.push_back(IV_MEM);
     return retVal;
 }
 

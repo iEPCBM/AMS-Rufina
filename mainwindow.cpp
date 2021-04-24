@@ -80,6 +80,7 @@ void MainWindow::on_btSend_clicked()
     QProgressDialog dlgSending("Отправка сообщения", "Отмена", 0, checkedFloors.length(), this);
     dlgSending.setWindowModality(Qt::WindowModal);
     dlgSending.show();
+    bool hasCriticalError = false;
     int progress = 0;
     foreach(uint8_t floor, checkedFloors) {
         dlgSending.setLabelText("Отправка сообщения в \"" + m_settings->getChats()[floor].getTitle() + "\"");
@@ -95,6 +96,7 @@ void MainWindow::on_btSend_clicked()
                     dlgSending.cancel();
                 }
             } else {
+                hasCriticalError = true;
                 dlgSending.cancel();
             }
             isSentMsgList[floor]=false;
@@ -107,7 +109,9 @@ void MainWindow::on_btSend_clicked()
         dlgSending.setValue(++progress);
     }
     dlgSending.setValue(checkedFloors.length());
-    afterSentMessage(isSentMsgList);
+    if (!hasCriticalError) {
+        afterSentMessage(isSentMsgList);
+    }
 }
 
 void MainWindow::updateMsgPreview()
