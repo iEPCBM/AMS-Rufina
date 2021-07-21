@@ -6,13 +6,11 @@
         <file alias="exit">assets/icons/UI/third_party/Tango/exit.png</file>
         <file alias="settings">assets/icons/UI/third_party/Tango/settings.png</file>
     </qresource>
-    <qresource prefix="/langs" lang="ru">
+    <qresource lang="ru" prefix="/langs">
         <file alias="qtbase_ru.qm">assets/translations/third_party/qtbase_ru.qm</file>
     </qresource>
-    <qresource prefix="/misc" lang="RUFINA.DAT">
-        <file>assets/misc/RUFINA.DAT</file>
-    </qresource>
-    <qresource prefix="/phrases" lang="ru">
+    <qresource lang="RUFINA.DAT" prefix="/misc"/>
+    <qresource lang="ru" prefix="/phrases">
         <file alias="errlist.cfg">assets/errlist.cfg</file>
     </qresource>
 </RCC>

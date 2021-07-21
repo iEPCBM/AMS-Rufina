@@ -56,7 +56,8 @@ void MainWindow::on_btSend_clicked()
     MessageAssembler masm(m_settings, ui->ptxtedMessageText->toPlainText(), ui->chkAddAttentionStr->isChecked(), ui->chkPingAll->isChecked(), ui->chkAddSignature->isChecked());
     QString token = "";
     if (m_settings->isEncrypted()) {
-        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_settings->getVkToken().toUtf8()), this);
+        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_settings->getVkToken().toUtf8()),
+                                          QByteArray::fromHex(m_settings->getInitializeVector().toUtf8()), this);
         dlgPasswEnter.exec();
         if (dlgPasswEnter.isSuccessful()) {
             token = QString::fromUtf8(dlgPasswEnter.getDecryptedData());

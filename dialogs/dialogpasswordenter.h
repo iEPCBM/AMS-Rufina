@@ -14,7 +14,7 @@ class DialogPasswordEnter : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogPasswordEnter(QByteArray encryptedData, QWidget *parent = nullptr);
+    DialogPasswordEnter(QByteArray encryptedData, QByteArray iv, QWidget *parent = nullptr);
     ~DialogPasswordEnter();
 
     QString getPassword();

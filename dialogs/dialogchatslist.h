@@ -17,7 +17,7 @@ class DialogChatsList : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogChatsList(QHash<uint8_t, VkChat> chats, QString token = "", bool isEncrypted = false, QWidget *parent = nullptr);
+    explicit DialogChatsList(QHash<uint8_t, VkChat> chats, QString token = "", bool isEncrypted = false, QString iv="", QWidget *parent = nullptr);
     ~DialogChatsList();
 
     void setToken(const QString &token, const bool &isEncrypted);
@@ -34,6 +34,7 @@ private slots:
 private:
     Ui::DialogChatsList *ui;
     QString m_token;
+    QString m_IV;
     bool m_isEncrypted;
     QHash<uint8_t, VkChat> m_chats;
 

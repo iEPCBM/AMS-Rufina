@@ -6,14 +6,22 @@ AESFacade::AESFacade(QByteArray arrData)
     m_arrSourceData = arrData;
 }
 
+AESFacade::AESFacade(QByteArray arrData, QByteArray iv)
+{
+    m_aes = new AES(AES_KEY_LEN);
+    m_IV = iv;
+    m_arrSourceData = arrData;
+}
+
 bool AESFacade::decryption(QString strPassword)
 {
+    R_ASSERT((m_IV.length()==0x20), return false, nullptr);
+
     QByteArray hash = QCryptographicHash::hash(strPassword.toUtf8(), QCryptographicHash::Sha256);
-    QByteArray iv = getIV();
     uchar* decryptedData = m_aes->DecryptCBC(
                 (uchar*)m_arrSourceData.data(),
                 m_arrSourceData.length(),
-                (uchar*)hash.data(), (uchar*)iv.data());
+                (uchar*)hash.data(), (uchar*)m_IV.data());
     QByteArray data = QByteArray((char*)decryptedData, m_arrSourceData.length());
 
     //stage 1
@@ -45,24 +53,32 @@ QByteArray AESFacade::encryption(QString strPassword)
                 m_arrSourceData,
                 QCryptographicHash::Sha256).toHex();
     QByteArray dataToEncry = m_arrSourceData + DATA_SEPARATOR + hashData;
-    QByteArray iv = getIV();
+    m_IV = generateIV();
     uint32_t outLen = 0;
     uchar* encryptedData = m_aes->EncryptCBC(
                 (uchar*)dataToEncry.data(),
                 dataToEncry.length(),
                 (uchar*)key.data(),
-                (uchar*)iv.data(),
+                (uchar*)m_IV.data(),
                 outLen);
     QByteArray data = QByteArray((char*)encryptedData, outLen);
 
     return data;
 }
 
-QByteArray AESFacade::getIV()
+QByteArray AESFacade::generateIV()
 {
-    QByteArray retVal;
-    for (auto i=0; i<AES_KEY_LEN/0x08; i++) retVal.push_back(IV_MEM);
+    QString data = QDate::currentDate().toString(Qt::ISODate)+DATA_SEPARATOR
+                    +QTime::currentTime().toString(Qt::ISODateWithMs);
+    QByteArray retVal =  QCryptographicHash::hash(
+                data.toUtf8(),
+                QCryptographicHash::Sha256);
     return retVal;
+}
+
+QByteArray AESFacade::getIV() const
+{
+    return m_IV;
 }
 
 QByteArray AESFacade::getDecryptedData() const

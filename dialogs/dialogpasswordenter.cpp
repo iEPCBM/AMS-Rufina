@@ -1,10 +1,10 @@
 #include "dialogpasswordenter.h"
 #include "ui_dialogpasswordenter.h"
 
-DialogPasswordEnter::DialogPasswordEnter(QByteArray encryptedData, QWidget *parent) :
+DialogPasswordEnter::DialogPasswordEnter(QByteArray encryptedData, QByteArray iv, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogPasswordEnter),
-    m_aes(encryptedData)
+    m_aes(encryptedData, iv)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);

@@ -1,13 +1,13 @@
 #include "dialogchatslist.h"
 #include "ui_dialogchatslist.h"
 
-DialogChatsList::DialogChatsList(QHash<uint8_t, VkChat> chats, QString token, bool isEncrypted, QWidget *parent) :
+DialogChatsList::DialogChatsList(QHash<uint8_t, VkChat> chats, QString token, bool isEncrypted, QString iv, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogChatsList)
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
+    m_IV = iv;
     setToken(token, isEncrypted);
     m_chats = chats;
     ui->tableChats->setFocusPolicy(Qt::NoFocus);
@@ -27,7 +27,7 @@ void DialogChatsList::setToken(const QString &token, const bool &isEncrypted)
 
 void DialogChatsList::on_btnAddChat_clicked()
 {
-    DialogAddChat dlgAddChat(m_token, m_isEncrypted, this);
+    DialogAddChat dlgAddChat(m_token, m_isEncrypted, m_IV, this);
     dlgAddChat.setAddedChats(m_chats);
     int resultDlg = dlgAddChat.exec();
     if (resultDlg == QDialog::Accepted) {
@@ -104,7 +104,7 @@ void DialogChatsList::updateChatsTable()
         iconEdit.addFile(QString::fromUtf8(FILEPATH_ICON_EDIT), QSize(), QIcon::Normal, QIcon::Off);
         btEditChat->setIcon(iconEdit);
         QIcon iconDelete;
-        iconDelete.addFile(QString::fromUtf8(FILEPATH_ICON_ADD), QSize(), QIcon::Normal, QIcon::Off);
+        iconDelete.addFile(QString::fromUtf8(FILEPATH_ICON_DELETE), QSize(), QIcon::Normal, QIcon::Off);
         btDeleteChat->setIcon(iconDelete);
 
         QWidget *widgetWrapper = new QWidget();

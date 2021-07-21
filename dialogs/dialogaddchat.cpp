@@ -1,7 +1,7 @@
 #include "dialogaddchat.h"
 #include "ui_dialogaddchat.h"
 
-DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
+DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QString iv, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogAddChat)
 {
@@ -13,6 +13,7 @@ DialogAddChat::DialogAddChat(QString token, bool isEncrypted, QWidget *parent) :
 
     ui->lbChatsNotFound->setVisible(false);
     m_isEncryptedToken = isEncrypted;
+    m_IV = iv;
     if (m_isEncryptedToken) {
         m_encryptedToken = token;
     } else {
@@ -70,10 +71,6 @@ void DialogAddChat::on_btStartStopFind_clicked()
 void DialogAddChat::findChats()
 {
     uint32_t id = 1;
-    /*if (m_decryptedToken.isEmpty()) {
-        stopSearching();
-        return;
-    }*/
     bool isSuccessful = true;
     VkChatHandler chatHandler(this, m_decryptedToken);
     VkUserHandler usrHandler(this, m_decryptedToken);
@@ -285,7 +282,7 @@ void DialogAddChat::setChatAddedState(uint row, bool state)
 bool DialogAddChat::decryptToken()
 {
     if (m_isEncryptedToken&&m_decryptedToken.isEmpty()) {
-        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_encryptedToken.toUtf8()), this);
+        DialogPasswordEnter dlgPasswEnter(QByteArray::fromBase64(m_encryptedToken.toUtf8()), QByteArray::fromHex(m_IV.toUtf8()), this);
         dlgPasswEnter.exec();
         if (dlgPasswEnter.isSuccessful()) {
             m_decryptedToken = QString::fromUtf8(dlgPasswEnter.getDecryptedData());

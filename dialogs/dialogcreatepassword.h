@@ -19,6 +19,8 @@ public:
 
     QByteArray endcryptedData() const;
 
+    QByteArray IV() const;
+
 private slots:
     void on_lePasswordConfirm_textEdited(const QString &arg1);
 
@@ -32,6 +34,7 @@ private:
 
     AESFacade m_aes;
     QByteArray m_endcryptedData;
+    QByteArray m_IV;
 };
 
 #endif // DIALOGCREATEPASSWORD_H

@@ -118,6 +118,7 @@ bool Settings::writeConf(QFile *file)
             xml.writeEndElement(); // ENCRY_TAG
 
             xml.writeStartElement(VK_TOKEN_TAG);
+            if (m_isEncrypted) xml.writeAttribute(IV_ATTR, m_initializeVector);
             xml.writeAttribute(VALUE_ATTR, m_vkToken);
             xml.writeEndElement(); // VK_TOKEN_TAG
 
@@ -189,10 +190,15 @@ bool Settings::readConf(QFile *file)
                                 m_tokenSignature = "";
                             }
                         } else if (xml.name()==VK_TOKEN_TAG) {
-                            if(attributes.hasAttribute(VALUE_ATTR)) {
+                            if (attributes.hasAttribute(VALUE_ATTR)) {
                                 m_vkToken = attributes.value(VALUE_ATTR).toString();
                             } else {
                                 m_vkToken = "";
+                            }
+                            if (attributes.hasAttribute(IV_ATTR)) {
+                                m_initializeVector = attributes.value(IV_ATTR).toString();
+                            } else {
+                                m_initializeVector = "";
                             }
                         } else if (xml.name()==CHATS_WRAPPER_TAG) {
                             xml.readNext();
@@ -233,6 +239,16 @@ bool Settings::readConf(QFile *file)
         }
     }
     return true;
+}
+
+QString Settings::getInitializeVector() const
+{
+    return m_initializeVector;
+}
+
+void Settings::setInitializeVector(const QString &initializeVector)
+{
+    m_initializeVector = initializeVector;
 }
 
 void Settings::setChats(const QHash<uint8_t, VkChat> &chats)

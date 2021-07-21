@@ -21,6 +21,7 @@
 #define CHAT_TAG "chat"
 
 #define VALUE_ATTR "value"
+#define IV_ATTR "iv"
 #define NAME_ATTR "name"
 #define ID_ATTR "id"
 #define FLOOR_ATTR "floor"
@@ -55,6 +56,9 @@ public:
     QHash<uint8_t, VkChat> getChats() const;
     void setChats(const QHash<uint8_t, VkChat> &chats);
 
+    QString getInitializeVector() const;
+    void setInitializeVector(const QString &initializeVector);
+
 private:
     QString m_strPath;
     QString m_hsymbols;
@@ -65,6 +69,7 @@ private:
 
     QString m_tokenSignature;
     QString m_vkToken;
+    QString m_initializeVector;
     bool m_isEncrypted;
     QHash<uint8_t, VkChat> m_chats; // n floor - Chat table
 };

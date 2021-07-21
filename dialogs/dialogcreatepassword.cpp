@@ -38,6 +38,11 @@ bool DialogCreatePassword::checkPassword()
     return true;
 }
 
+QByteArray DialogCreatePassword::IV() const
+{
+    return m_IV;
+}
+
 QByteArray DialogCreatePassword::endcryptedData() const
 {
     return m_endcryptedData;
@@ -46,4 +51,5 @@ QByteArray DialogCreatePassword::endcryptedData() const
 void DialogCreatePassword::on_buttonBox_accepted()
 {
     m_endcryptedData = m_aes.encryption(ui->lePassword->text());
+    m_IV = m_aes.getIV();
 }

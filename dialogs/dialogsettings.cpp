@@ -29,7 +29,11 @@ void DialogSettings::update()
 
 void DialogSettings::on_btEditChatsList_clicked()
 {
-    DialogChatsList d_chats(settingsHandler->getChats(), settingsHandler->getVkToken(), settingsHandler->isEncrypted(), this);
+    DialogChatsList d_chats(settingsHandler->getChats(),
+                            settingsHandler->getVkToken(),
+                            settingsHandler->isEncrypted(),
+                            settingsHandler->getInitializeVector(), this);
+
     int resultDlg = d_chats.exec();
     if (resultDlg == QDialog::Accepted) {
         settingsHandler->setChats(d_chats.getChats());
@@ -40,7 +44,8 @@ void DialogSettings::on_btShowToken_clicked()
 {
     DialogToken dlgToken(this);
     if (settingsHandler->isEncrypted()) {
-        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()),
+                                    QByteArray::fromHex(settingsHandler->getInitializeVector().toUtf8()), this);
         dlgPswd.exec();
         if (dlgPswd.isSuccessful()) {
             dlgToken.setToken(dlgPswd.getDecryptedData());
@@ -57,6 +62,7 @@ bool DialogSettings::createPassword()
     DialogCreatePassword dlgCreatePswd(settingsHandler->getVkToken().toUtf8(), this);
     if (dlgCreatePswd.exec()==QDialog::Accepted) {
         settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
+        settingsHandler->setInitializeVector(QString::fromUtf8(dlgCreatePswd.IV().toHex()));
         return true;
     }
     return false;
@@ -90,7 +96,8 @@ void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
         setEncryptedFlag(createPassword());
     } else {
         if (QMessageBox::question(this,"Вы уверены?","Вы действительно хотите снять шифрование с токена?",QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes) {
-            DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+            DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()),
+                                        QByteArray::fromHex(settingsHandler->getInitializeVector().toUtf8()), this);
             dlgPswd.exec();
             if (dlgPswd.isSuccessful()) {
                 settingsHandler->setVkToken(dlgPswd.getDecryptedData());
@@ -106,12 +113,14 @@ void DialogSettings::on_chbUseKeyCry_clicked(bool checked)
 
 void DialogSettings::on_btEditKey_clicked()
 {
-    DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+    DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()),
+                                QByteArray::fromHex(settingsHandler->getInitializeVector().toUtf8()), this);
     dlgPswd.exec();
     if (dlgPswd.isSuccessful()) {
         DialogCreatePassword dlgCreatePswd(dlgPswd.getDecryptedData(), this);
         if (dlgCreatePswd.exec()==QDialog::Accepted) {
             settingsHandler->setVkToken(QString::fromUtf8(dlgCreatePswd.endcryptedData().toBase64()));
+            settingsHandler->setInitializeVector(QString::fromUtf8(dlgCreatePswd.IV().toHex()));
         }
     }
 }
@@ -120,7 +129,8 @@ void DialogSettings::on_btEditToken_clicked()
 {
     QString token = "";
     if (settingsHandler->isEncrypted()) {
-        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()), this);
+        DialogPasswordEnter dlgPswd(QByteArray::fromBase64(settingsHandler->getVkToken().toUtf8()),
+                                    QByteArray::fromHex(settingsHandler->getInitializeVector().toUtf8()), this);
         dlgPswd.exec();
         if (dlgPswd.isSuccessful()) {
             token = QString::fromUtf8(dlgPswd.getDecryptedData());
@@ -129,6 +139,7 @@ void DialogSettings::on_btEditToken_clicked()
             AESFacade aes(dlgEdToken.token().toUtf8());
             QByteArray encryData = aes.encryption(dlgPswd.getPassword());
             settingsHandler->setVkToken(QString::fromUtf8(encryData.toBase64()));
+            settingsHandler->setInitializeVector(QString::fromUtf8(aes.getIV().toHex()));
         } else {
             return;
         }

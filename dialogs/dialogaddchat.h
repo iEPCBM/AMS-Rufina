@@ -25,7 +25,7 @@ class DialogAddChat : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogAddChat(QString token, bool isEncrypted, QWidget *parent = nullptr);
+    explicit DialogAddChat(QString token, bool isEncrypted, QString iv = "", QWidget *parent = nullptr);
     ~DialogAddChat();
 
     QHash<uint8_t, VkChat> getAddedChats() const;
@@ -63,6 +63,7 @@ private:
 
     QString m_encryptedToken;
     QString m_decryptedToken;
+    QString m_IV;
     bool m_isEncryptedToken;
 
     bool  decryptToken();
