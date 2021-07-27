@@ -97,8 +97,8 @@ win32 {
     RC_ICONS = assets/icons/icon.ico
     RC_LANG = 0x0419
     RC_CODEPAGE = 1200
-    VERSION = 1.0.1.63
-    DEFINES += APP_VER_BUILD=63
+    VERSION = 1.0.1.64
+    DEFINES += APP_VER_BUILD=64
 }
 else {
     VERSION = 1.0.1

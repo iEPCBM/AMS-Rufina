@@ -45,11 +45,4 @@ private:
     int m_ownerId=0;
     unsigned int m_id;
 };
-
-static bool operator== (const VkChat &a, const VkChat &b) {
-    if (a.getId()==b.getId()) {
-        return true;
-    }
-    return false;
-}
 #endif // VKCHAT_H
