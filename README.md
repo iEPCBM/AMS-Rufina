@@ -1,3 +1,5 @@
+This software (AMS Rufina) uses the Qt framework.
+
 This software (AMS Rufina) includes the "C++ AES (Advanced Encryption Standard) implementation".
 
 License of the "C++ AES (Advanced Encryption Standard) implementation":
