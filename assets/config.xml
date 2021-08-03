@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-    <hsymbols value="‼‼‼‼‼‼‼"/>
-    <signature value="Ришат"/>
+    <hsymbols value=""/>
+    <signature value=""/>
     <secure>
         <encrypted value="0"/>
         <vktoken value=""/>
-        <chats>
-            <chat name="TEST 4 FLOOR" id="3" floor="4"/>
-            <chat name="5 ЭТАЖ" id="4" floor="5"/>
-            <chat name="TEST 2 FLOOR" id="1" floor="2"/>
-            <chat name="TEST 3 FLOOR" id="2" floor="3"/>
-        </chats>
+        <chats/>
     </secure>
 </config>
